@@ -592,6 +592,18 @@
             const orderItems = cart.map(item => `№${item.id} - ${item.name} (${item.price})`).join('\n');
             const total = cart.reduce((sum, item) => sum + item.priceNum, 0);
 
+            const orderData = {
+                action: 'order',
+                items: cart,
+                total: total,
+                user_id: tg.initDataUnsafe.user?.id,
+                username: tg.initDataUnsafe.user?.username,
+                first_name: tg.initDataUnsafe.user?.first_name,
+                last_name: tg.initDataUnsafe.user?.last_name
+            };
+
+            console.log('📦 Отправка заказа боту:', orderData);
+
             tg.showAlert(
                 '✅ Ваш заказ принят!\n\n' +
                 'Товары:\n' + orderItems + '\n\n' +
@@ -600,15 +612,12 @@
                 '(Если не напишет в течении 3 часов, свяжитесь с ним сами)'
             );
 
-            tg.sendData(JSON.stringify({
-                action: 'order',
-                items: cart,
-                total: total,
-                user_id: tg.initDataUnsafe.user?.id,
-                username: tg.initDataUnsafe.user?.username,
-                first_name: tg.initDataUnsafe.user?.first_name,
-                last_name: tg.initDataUnsafe.user?.last_name
-            }));
+            try {
+                tg.sendData(JSON.stringify(orderData));
+                console.log('✅ Данные отправлены боту успешно!');
+            } catch (error) {
+                console.error('❌ Ошибка при отправке данных:', error);
+            }
 
             cart = [];
             updateCartBadge();
