@@ -24,6 +24,7 @@
             text-align: center;
             margin-bottom: 24px;
             padding: 20px 0;
+            position: relative;
         }
 
         .header h1 {
@@ -35,6 +36,45 @@
         .header p {
             color: var(--tg-theme-hint-color, #999);
             font-size: 14px;
+        }
+
+        .cart-button {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            background: var(--tg-theme-button-color, #3390ec);
+            color: var(--tg-theme-button-text-color, #fff);
+            border: none;
+            border-radius: 50%;
+            width: 56px;
+            height: 56px;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: #ff3b30;
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            font-size: 12px;
+            font-weight: 700;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cart-badge.active {
+            display: flex;
         }
 
         .section-title {
@@ -228,9 +268,89 @@
             font-size: 48px;
             margin-bottom: 16px;
         }
+
+        /* Корзина */
+        .cart-view {
+            display: none;
+        }
+
+        .cart-view.active {
+            display: block;
+        }
+
+        .cart-item {
+            background: var(--tg-theme-secondary-bg-color, #f0f0f0);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .cart-item-price {
+            color: var(--tg-theme-hint-color, #999);
+            font-size: 14px;
+        }
+
+        .cart-item-remove {
+            background: #ff3b30;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .cart-total {
+            background: var(--tg-theme-secondary-bg-color, #f0f0f0);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            font-size: 18px;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .order-button {
+            width: 100%;
+            background: #34c759;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 16px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 80px;
+        }
+
+        .order-button:active {
+            opacity: 0.8;
+        }
+
+        .order-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body>
+    <button class="cart-button" onclick="showCart()">
+        🛒
+        <span class="cart-badge" id="cartBadge">0</span>
+    </button>
+
     <div id="mainView">
         <div class="header">
             <h1>🛍 G&E Store</h1>
@@ -274,11 +394,22 @@
 
     <div id="productsView" class="products-list"></div>
 
+    <div id="cartView" class="cart-view">
+        <div class="header">
+            <h1>🛒 Корзина</h1>
+            <p>Ваши выбранные товары</p>
+        </div>
+        <div id="cartItems"></div>
+    </div>
+
     <button class="back-button" id="backButton" onclick="goBack()">◀️ Назад</button>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
+
+        let cart = [];
+        let currentView = 'main';
 
         const PRODUCTS = {
             hoodies: [
@@ -286,12 +417,14 @@
                     id: 1,
                     name: "Худи Berserk",
                     price: "6400 руб",
+                    priceNum: 6400,
                     images: ["https://via.placeholder.com/400x400/667eea/ffffff?text=Hoodie+1"]
                 },
                 {
                     id: 2,
                     name: "Худи Berserk 2",
                     price: "5400 руб",
+                    priceNum: 5400,
                     images: ["https://via.placeholder.com/400x400/764ba2/ffffff?text=Hoodie+2"]
                 }
             ],
@@ -300,36 +433,42 @@
                     id: 3,
                     name: "Футболка Berserk 1",
                     price: "4600 руб",
+                    priceNum: 4600,
                     images: ["https://via.placeholder.com/400x400/f093fb/ffffff?text=Tshirt+1"]
                 },
                 {
                     id: 4,
                     name: "Футболка Berserk 2",
                     price: "3000 руб",
+                    priceNum: 3000,
                     images: ["https://via.placeholder.com/400x400/4facfe/ffffff?text=Tshirt+2"]
                 },
                 {
                     id: 5,
                     name: "Футболка Berserk 3",
                     price: "3600 руб",
+                    priceNum: 3600,
                     images: ["https://via.placeholder.com/400x400/00f2fe/ffffff?text=Tshirt+3"]
                 },
                 {
                     id: 6,
                     name: "Футболка Ведьмак",
                     price: "4000 руб",
+                    priceNum: 4000,
                     images: ["https://via.placeholder.com/400x400/43e97b/ffffff?text=Tshirt+4"]
                 },
                 {
                     id: 7,
                     name: "Футболка Bleach 1",
                     price: "4500 руб",
+                    priceNum: 4500,
                     images: ["https://via.placeholder.com/400x400/38f9d7/ffffff?text=Tshirt+5"]
                 },
                 {
                     id: 8,
                     name: "Футболка Bleach 2",
                     price: "4500 руб",
+                    priceNum: 4500,
                     images: ["https://via.placeholder.com/400x400/fa709a/ffffff?text=Tshirt+6"]
                 }
             ],
@@ -358,6 +497,124 @@
             witcher: { title: "🐺 Ведьмак", info: "Коллекция по мотивам Ведьмака" }
         };
 
+        function updateCartBadge() {
+            const badge = document.getElementById('cartBadge');
+            if (cart.length > 0) {
+                badge.textContent = cart.length;
+                badge.classList.add('active');
+            } else {
+                badge.classList.remove('active');
+            }
+        }
+
+        function addToCart(id, name, price, priceNum) {
+            const existingItem = cart.find(item => item.id === id);
+
+            if (existingItem) {
+                tg.showAlert('❌ Этот товар уже в корзине!');
+                return;
+            }
+
+            cart.push({ id, name, price, priceNum });
+            updateCartBadge();
+            tg.showAlert('✅ Товар добавлен в корзину!\n\n' + name + '\n' + price);
+        }
+
+        function removeFromCart(id) {
+            cart = cart.filter(item => item.id !== id);
+            updateCartBadge();
+            renderCart();
+        }
+
+        function showCart() {
+            const mainView = document.getElementById('mainView');
+            const productsView = document.getElementById('productsView');
+            const cartView = document.getElementById('cartView');
+            const backButton = document.getElementById('backButton');
+
+            mainView.style.display = 'none';
+            productsView.classList.remove('active');
+            cartView.classList.add('active');
+            backButton.classList.add('active');
+
+            currentView = 'cart';
+            renderCart();
+        }
+
+        function renderCart() {
+            const cartItems = document.getElementById('cartItems');
+
+            if (cart.length === 0) {
+                cartItems.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🛒</div>
+                        <p>Корзина пуста</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let total = cart.reduce((sum, item) => sum + item.priceNum, 0);
+
+            let html = '';
+            cart.forEach(item => {
+                html += `
+                    <div class="cart-item">
+                        <div class="cart-item-info">
+                            <div class="cart-item-name">№${item.id} - ${item.name}</div>
+                            <div class="cart-item-price">${item.price}</div>
+                        </div>
+                        <button class="cart-item-remove" onclick="removeFromCart(${item.id})">
+                            🗑️ Удалить
+                        </button>
+                    </div>
+                `;
+            });
+
+            html += `
+                <div class="cart-total">
+                    💰 Итого: ${total} руб
+                </div>
+                <button class="order-button" onclick="placeOrder()">
+                    ✅ Оформить заказ
+                </button>
+            `;
+
+            cartItems.innerHTML = html;
+        }
+
+        function placeOrder() {
+            if (cart.length === 0) {
+                tg.showAlert('❌ Корзина пуста!');
+                return;
+            }
+
+            const orderItems = cart.map(item => `№${item.id} - ${item.name} (${item.price})`).join('\n');
+            const total = cart.reduce((sum, item) => sum + item.priceNum, 0);
+
+            tg.showAlert(
+                '✅ Ваш заказ принят!\n\n' +
+                'Товары:\n' + orderItems + '\n\n' +
+                'Итого: ' + total + ' руб\n\n' +
+                'Скоро с вами свяжется продавец @guts_enj0yer для уточнения деталей доставки и оплаты.\n\n' +
+                '(Если не напишет в течении 3 часов, свяжитесь с ним сами)'
+            );
+
+            tg.sendData(JSON.stringify({
+                action: 'order',
+                items: cart,
+                total: total,
+                user_id: tg.initDataUnsafe.user?.id,
+                username: tg.initDataUnsafe.user?.username,
+                first_name: tg.initDataUnsafe.user?.first_name,
+                last_name: tg.initDataUnsafe.user?.last_name
+            }));
+
+            cart = [];
+            updateCartBadge();
+            renderCart();
+        }
+
         function showCategory(category) {
             const products = PRODUCTS[category];
             const info = THEME_INFO[category];
@@ -373,11 +630,15 @@
         function displayProducts(products, title, info) {
             const mainView = document.getElementById('mainView');
             const productsView = document.getElementById('productsView');
+            const cartView = document.getElementById('cartView');
             const backButton = document.getElementById('backButton');
 
             mainView.style.display = 'none';
+            cartView.classList.remove('active');
             productsView.classList.add('active');
             backButton.classList.add('active');
+
+            currentView = 'products';
 
             let html = `
                 <div class="header">
@@ -406,8 +667,8 @@
                                     <span class="product-price">${product.price}</span>
                                 </div>
                                 <div class="product-name">${product.name}</div>
-                                <button class="buy-button" onclick="buyProduct(${product.id}, '${product.name}', '${product.price}')">
-                                    🛒 Купить
+                                <button class="buy-button" onclick="addToCart(${product.id}, '${product.name}', '${product.price}', ${product.priceNum})">
+                                    🛒 Добавить в корзину
                                 </button>
                             </div>
                         </div>
@@ -422,25 +683,19 @@
         function goBack() {
             const mainView = document.getElementById('mainView');
             const productsView = document.getElementById('productsView');
+            const cartView = document.getElementById('cartView');
             const backButton = document.getElementById('backButton');
 
             mainView.style.display = 'block';
             productsView.classList.remove('active');
+            cartView.classList.remove('active');
             backButton.classList.remove('active');
+
+            currentView = 'main';
             window.scrollTo(0, 0);
         }
 
-        function buyProduct(id, name, price) {
-            tg.sendData(JSON.stringify({
-                action: 'buy',
-                product_id: id,
-                product_name: name,
-                product_price: price,
-                user_id: tg.initDataUnsafe.user?.id,
-                username: tg.initDataUnsafe.user?.username,
-                first_name: tg.initDataUnsafe.user?.first_name
-            }));
-        }
+        updateCartBadge();
     </script>
 </body>
 </html>
