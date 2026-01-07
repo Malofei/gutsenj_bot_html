@@ -178,6 +178,41 @@
             background: #ddd;
         }
 
+        .image-counter {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* Полная карточка товара */
+        .product-detail {
+            display: none;
+        }
+
+        .product-detail.active {
+            display: block;
+        }
+
+        .product-detail-images {
+            margin-bottom: 16px;
+        }
+
+        .product-detail-image {
+            width: 100%;
+            height: auto;
+            max-height: 500px;
+            object-fit: contain;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            background: #f0f0f0;
+        }
+
         .product-info {
             padding: 16px;
         }
@@ -357,17 +392,17 @@
             <p>Выберите категорию или тематику</p>
         </div>
 
-        <div class="section-title">Категории</div>
+        <div class="section-title">📦 Категории</div>
         <div class="categories-grid">
             <div class="category-card" onclick="showCategory('tshirts')">
-                Футболки
+                👕 Футболки
             </div>
             <div class="category-card" onclick="showCategory('hoodies')">
-                Худи
+                👘 Худи
             </div>
         </div>
 
-        <div class="section-title">Тематики</div>
+        <div class="section-title">🎨 Тематики</div>
         <div class="themes-grid">
             <div class="theme-card" onclick="showTheme('berserk')">
                 <div class="theme-image">⚔️</div>
@@ -393,6 +428,8 @@
     </div>
 
     <div id="productsView" class="products-list"></div>
+
+    <div id="productDetailView" class="product-detail"></div>
 
     <div id="cartView" class="cart-view">
         <div class="header">
@@ -421,32 +458,21 @@
                 {
                     id: 1,
                     name: "Худи Berserk",
-                    price: "7000 руб",
-                    priceNum: 7000,
+                    price: "6400 руб",
+                    priceNum: 6400,
                     images: [
-                        "https://malofei.github.io/gutsenj_bot_html/images/hoodie1.jpg",
-                        "https://malofei.github.io/gutsenj_bot_html/images/hoodie2.jpg",
-                        "https://malofei.github.io/gutsenj_bot_html/images/hoodie3.jpg",
-                        "https://malofei.github.io/gutsenj_bot_html/images/hoodie4.jpg",
-                        "https://malofei.github.io/gutsenj_bot_html/images/hoodie5.jpg",
-                        "https://malofei.github.io/gutsenj_bot_html/images/hoodie6.jpg",
-                        "https://malofei.github.io/gutsenj_bot_html/images/hoodie7.jpg"
+                        "https://api.telegram.org/file/bot8196983313:AAFW_D_iURnlSm8Hv7UAGme4KLyvBy6XvSA/photos/file_1.jpg",
+                        "https://api.telegram.org/file/bot8196983313:AAFW_D_iURnlSm8Hv7UAGme4KLyvBy6XvSA/photos/file_2.jpg"
                     ]
                 },
                 {
                     id: 2,
                     name: "Худи Berserk 2",
-                    price: "7000 руб",
-                    priceNum: 7000,
+                    price: "5400 руб",
+                    priceNum: 5400,
                     images: [
-                        "https://malofei.github.io/gutsenj_bot_html/images/hoddie_grif_1.jpg",
-                        "https://malofei.github.io/gutsenj_bot_html/images/hoddie_grif_2.jpg",
-                        "https://malofei.github.io/gutsenj_bot_html/images/hoddie_grif_3.jpg",
-                        "https://malofei.github.io/gutsenj_bot_html/images/hoddie_grif_4.jpg",
-                        "https://malofei.github.io/gutsenj_bot_html/images/hoddie_grif_5.jpg",
-                        "https://malofei.github.io/gutsenj_bot_html/images/hoddie_grif_6.jpg",
-                        "https://malofei.github.io/gutsenj_bot_html/images/hoddie_grif_7.jpg",
-                        "https://malofei.github.io/gutsenj_bot_html/images/hoddie_grif_8.jpg"
+                        "https://via.placeholder.com/400x400/764ba2/ffffff?text=Hoodie+2",
+                        "https://via.placeholder.com/400x400/667eea/ffffff?text=Hoodie+2"
                     ]
                 }
             ],
@@ -457,10 +483,8 @@
                     price: "4600 руб",
                     priceNum: 4600,
                     images: [
-                        "https://malofei.github.io/gutsenj_bot_html/images/tshka_berserk_1.jpg",
-                        "https://malofei.github.io/gutsenj_bot_html/images/tshka_berserk_2.jpg",
-                        "https://malofei.github.io/gutsenj_bot_html/images/tshka_berserk_3.jpg",
-                        "https://malofei.github.io/gutsenj_bot_html/images/tshka_berserk_4.jpg"
+                        "https://via.placeholder.com/400x400/f093fb/ffffff?text=Tshirt+1",
+                        "https://via.placeholder.com/400x400/4facfe/ffffff?text=Tshirt+1"
                     ]
                 },
                 {
@@ -469,8 +493,8 @@
                     price: "3000 руб",
                     priceNum: 3000,
                     images: [
-                        "https://malofei.github.io/gutsenj_bot_html/images/tshka_grif_1.jpg",
-                        "https://malofei.github.io/gutsenj_bot_html/images/tshka_grif_2.jpg"
+                        "https://via.placeholder.com/400x400/4facfe/ffffff?text=Tshirt+2",
+                        "https://via.placeholder.com/400x400/00f2fe/ffffff?text=Tshirt+2"
                     ]
                 },
                 {
@@ -479,8 +503,8 @@
                     price: "3600 руб",
                     priceNum: 3600,
                     images: [
-                        "https://malofei.github.io/gutsenj_bot_html/images/tshka_berserk_21.jpg",
-                        "https://malofei.github.io/gutsenj_bot_html/images/tshka_berserk_22.jpg"
+                        "https://via.placeholder.com/400x400/00f2fe/ffffff?text=Tshirt+3",
+                        "https://via.placeholder.com/400x400/43e97b/ffffff?text=Tshirt+3"
                     ]
                 },
                 {
@@ -489,10 +513,8 @@
                     price: "4000 руб",
                     priceNum: 4000,
                     images: [
-                        "https://malofei.github.io/gutsenj_bot_html/images/tshka_witcher_1.jpg",
-                        "https://malofei.github.io/gutsenj_bot_html/images/tshka_witcher_2.jpg",
-                        "https://malofei.github.io/gutsenj_bot_html/images/tshka_witcher_3.jpg",
-                        "https://malofei.github.io/gutsenj_bot_html/images/tshka_witcher_4.jpg"
+                        "https://via.placeholder.com/400x400/43e97b/ffffff?text=Tshirt+4",
+                        "https://via.placeholder.com/400x400/38f9d7/ffffff?text=Tshirt+4"
                     ]
                 },
                 {
@@ -501,10 +523,8 @@
                     price: "4500 руб",
                     priceNum: 4500,
                     images: [
-                        "https://malofei.github.io/gutsenj_bot_html/images/tshka_urahara_1.jpg",
-                        "https://malofei.github.io/gutsenj_bot_html/images/tshka_urahara_2.jpg",
-                        "https://malofei.github.io/gutsenj_bot_html/images/tshka_urahara_3.jpg",
-                        "https://malofei.github.io/gutsenj_bot_html/images/tshka_urahara_4.jpg"
+                        "https://via.placeholder.com/400x400/38f9d7/ffffff?text=Tshirt+5",
+                        "https://via.placeholder.com/400x400/fa709a/ffffff?text=Tshirt+5"
                     ]
                 },
                 {
@@ -513,11 +533,8 @@
                     price: "4500 руб",
                     priceNum: 4500,
                     images: [
-                        "https://malofei.github.io/gutsenj_bot_html/images/tshka_kyoraku_1.jpg",
-                        "https://malofei.github.io/gutsenj_bot_html/images/tshka_kyoraku_2.jpg",
-                        "https://malofei.github.io/gutsenj_bot_html/images/tshka_kyoraku_3.jpg",
-                        "https://malofei.github.io/gutsenj_bot_html/images/tshka_kyoraku_4.jpg"
-
+                        "https://via.placeholder.com/400x400/fa709a/ffffff?text=Tshirt+6",
+                        "https://via.placeholder.com/400x400/f093fb/ffffff?text=Tshirt+6"
                     ]
                 }
             ],
@@ -532,11 +549,11 @@
 
         const THEME_INFO = {
             tshirts: {
-                title: "Футболки",
+                title: "👕 Футболки",
                 info: "Состав: Хлопок 92% / Эластан 8%\nПлотность: 240гр.\nКрой: прямой\n\nВ цену входит доставка по СПб"
             },
             hoodies: {
-                title: "Худи",
+                title: "👘 Худи",
                 info: "Состав: Хлопок 100%\nПлотность 280гр./320гр.\n\nВ цену входит доставка по СПб"
             },
             berserk: { title: "⚔️ Берсерк", info: "Коллекция по мотивам манги Берсерк" },
@@ -578,16 +595,73 @@
         function showCart() {
             const mainView = document.getElementById('mainView');
             const productsView = document.getElementById('productsView');
+            const productDetailView = document.getElementById('productDetailView');
             const cartView = document.getElementById('cartView');
             const backButton = document.getElementById('backButton');
 
             mainView.style.display = 'none';
             productsView.classList.remove('active');
+            productDetailView.classList.remove('active');
             cartView.classList.add('active');
             backButton.classList.add('active');
 
             currentView = 'cart';
             renderCart();
+        }
+
+        function showProductDetail(productId) {
+            // Находим товар
+            const allProducts = [...PRODUCTS.hoodies, ...PRODUCTS.tshirts];
+            const product = allProducts.find(p => p.id === productId);
+
+            if (!product) return;
+
+            const mainView = document.getElementById('mainView');
+            const productsView = document.getElementById('productsView');
+            const productDetailView = document.getElementById('productDetailView');
+            const cartView = document.getElementById('cartView');
+            const backButton = document.getElementById('backButton');
+
+            mainView.style.display = 'none';
+            productsView.classList.remove('active');
+            cartView.classList.remove('active');
+            productDetailView.classList.add('active');
+            backButton.classList.add('active');
+
+            currentView = 'detail';
+
+            // Рендерим полную карточку товара
+            let html = `
+                <div class="header">
+                    <h1>${product.name}</h1>
+                    <p>№${product.id}</p>
+                </div>
+
+                <div class="product-detail-images">
+                    ${product.images.map((img, index) => `
+                        <img src="${img}" class="product-detail-image" alt="${product.name} - фото ${index + 1}">
+                    `).join('')}
+                </div>
+
+                <div class="product-card" style="margin-bottom: 80px;">
+                    <div class="product-info">
+                        <div class="product-header">
+                            <span class="product-number">№${product.id}</span>
+                            <span class="product-price">${product.price}</span>
+                        </div>
+                        <div class="product-name">${product.name}</div>
+                        <div style="margin: 12px 0; color: var(--tg-theme-hint-color, #999); font-size: 14px;">
+                            📸 Всего фотографий: ${product.images.length}
+                        </div>
+                        <button class="buy-button" onclick="addToCart(${product.id}, '${product.name}', '${product.price}', ${product.priceNum})">
+                            🛒 Добавить в корзину
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            productDetailView.innerHTML = html;
+            window.scrollTo(0, 0);
         }
 
         function renderCart() {
@@ -714,7 +788,7 @@
                     html += `
                         <div class="product-card">
                             <div class="product-images">
-                                ${product.images.map(img => `<img src="${img}" class="product-image">`).join('')}
+                                ${product.images.map(img => `<img src="${img}" class="product-image" onerror="this.src='https://via.placeholder.com/400x400/667eea/ffffff?text=Загрузка...'" crossorigin="anonymous">`).join('')}
                             </div>
                             <div class="product-info">
                                 <div class="product-header">
@@ -738,15 +812,27 @@
         function goBack() {
             const mainView = document.getElementById('mainView');
             const productsView = document.getElementById('productsView');
+            const productDetailView = document.getElementById('productDetailView');
             const cartView = document.getElementById('cartView');
             const backButton = document.getElementById('backButton');
 
-            mainView.style.display = 'block';
-            productsView.classList.remove('active');
-            cartView.classList.remove('active');
-            backButton.classList.remove('active');
+            if (currentView === 'detail') {
+                // Возвращаемся к списку товаров
+                mainView.style.display = 'none';
+                productsView.classList.add('active');
+                productDetailView.classList.remove('active');
+                cartView.classList.remove('active');
+                currentView = 'products';
+            } else {
+                // Возвращаемся на главную
+                mainView.style.display = 'block';
+                productsView.classList.remove('active');
+                productDetailView.classList.remove('active');
+                cartView.classList.remove('active');
+                backButton.classList.remove('active');
+                currentView = 'main';
+            }
 
-            currentView = 'main';
             window.scrollTo(0, 0);
         }
 
