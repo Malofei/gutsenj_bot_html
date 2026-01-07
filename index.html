@@ -178,41 +178,6 @@
             background: #ddd;
         }
 
-        .image-counter {
-            position: absolute;
-            bottom: 8px;
-            right: 8px;
-            background: rgba(0, 0, 0, 0.6);
-            color: white;
-            padding: 4px 8px;
-            border-radius: 8px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        /* Полная карточка товара */
-        .product-detail {
-            display: none;
-        }
-
-        .product-detail.active {
-            display: block;
-        }
-
-        .product-detail-images {
-            margin-bottom: 16px;
-        }
-
-        .product-detail-image {
-            width: 100%;
-            height: auto;
-            max-height: 500px;
-            object-fit: contain;
-            border-radius: 12px;
-            margin-bottom: 12px;
-            background: #f0f0f0;
-        }
-
         .product-info {
             padding: 16px;
         }
@@ -429,8 +394,6 @@
 
     <div id="productsView" class="products-list"></div>
 
-    <div id="productDetailView" class="product-detail"></div>
-
     <div id="cartView" class="cart-view">
         <div class="header">
             <h1>🛒 Корзина</h1>
@@ -460,20 +423,14 @@
                     name: "Худи Berserk",
                     price: "6400 руб",
                     priceNum: 6400,
-                    images: [
-                        "https://api.telegram.org/file/bot8196983313:AAFW_D_iURnlSm8Hv7UAGme4KLyvBy6XvSA/photos/file_1.jpg",
-                        "https://api.telegram.org/file/bot8196983313:AAFW_D_iURnlSm8Hv7UAGme4KLyvBy6XvSA/photos/file_2.jpg"
-                    ]
+                    images: ["https://via.placeholder.com/400x400/667eea/ffffff?text=Hoodie+1"]
                 },
                 {
                     id: 2,
                     name: "Худи Berserk 2",
                     price: "5400 руб",
                     priceNum: 5400,
-                    images: [
-                        "https://via.placeholder.com/400x400/764ba2/ffffff?text=Hoodie+2",
-                        "https://via.placeholder.com/400x400/667eea/ffffff?text=Hoodie+2"
-                    ]
+                    images: ["https://via.placeholder.com/400x400/764ba2/ffffff?text=Hoodie+2"]
                 }
             ],
             tshirts: [
@@ -482,60 +439,42 @@
                     name: "Футболка Berserk 1",
                     price: "4600 руб",
                     priceNum: 4600,
-                    images: [
-                        "https://via.placeholder.com/400x400/f093fb/ffffff?text=Tshirt+1",
-                        "https://via.placeholder.com/400x400/4facfe/ffffff?text=Tshirt+1"
-                    ]
+                    images: ["https://via.placeholder.com/400x400/f093fb/ffffff?text=Tshirt+1"]
                 },
                 {
                     id: 4,
                     name: "Футболка Berserk 2",
                     price: "3000 руб",
                     priceNum: 3000,
-                    images: [
-                        "https://via.placeholder.com/400x400/4facfe/ffffff?text=Tshirt+2",
-                        "https://via.placeholder.com/400x400/00f2fe/ffffff?text=Tshirt+2"
-                    ]
+                    images: ["https://via.placeholder.com/400x400/4facfe/ffffff?text=Tshirt+2"]
                 },
                 {
                     id: 5,
                     name: "Футболка Berserk 3",
                     price: "3600 руб",
                     priceNum: 3600,
-                    images: [
-                        "https://via.placeholder.com/400x400/00f2fe/ffffff?text=Tshirt+3",
-                        "https://via.placeholder.com/400x400/43e97b/ffffff?text=Tshirt+3"
-                    ]
+                    images: ["https://via.placeholder.com/400x400/00f2fe/ffffff?text=Tshirt+3"]
                 },
                 {
                     id: 6,
                     name: "Футболка Ведьмак",
                     price: "4000 руб",
                     priceNum: 4000,
-                    images: [
-                        "https://via.placeholder.com/400x400/43e97b/ffffff?text=Tshirt+4",
-                        "https://via.placeholder.com/400x400/38f9d7/ffffff?text=Tshirt+4"
-                    ]
+                    images: ["https://via.placeholder.com/400x400/43e97b/ffffff?text=Tshirt+4"]
                 },
                 {
                     id: 7,
                     name: "Футболка Bleach 1",
                     price: "4500 руб",
                     priceNum: 4500,
-                    images: [
-                        "https://via.placeholder.com/400x400/38f9d7/ffffff?text=Tshirt+5",
-                        "https://via.placeholder.com/400x400/fa709a/ffffff?text=Tshirt+5"
-                    ]
+                    images: ["https://via.placeholder.com/400x400/38f9d7/ffffff?text=Tshirt+5"]
                 },
                 {
                     id: 8,
                     name: "Футболка Bleach 2",
                     price: "4500 руб",
                     priceNum: 4500,
-                    images: [
-                        "https://via.placeholder.com/400x400/fa709a/ffffff?text=Tshirt+6",
-                        "https://via.placeholder.com/400x400/f093fb/ffffff?text=Tshirt+6"
-                    ]
+                    images: ["https://via.placeholder.com/400x400/fa709a/ffffff?text=Tshirt+6"]
                 }
             ],
             themes: {
@@ -595,73 +534,16 @@
         function showCart() {
             const mainView = document.getElementById('mainView');
             const productsView = document.getElementById('productsView');
-            const productDetailView = document.getElementById('productDetailView');
             const cartView = document.getElementById('cartView');
             const backButton = document.getElementById('backButton');
 
             mainView.style.display = 'none';
             productsView.classList.remove('active');
-            productDetailView.classList.remove('active');
             cartView.classList.add('active');
             backButton.classList.add('active');
 
             currentView = 'cart';
             renderCart();
-        }
-
-        function showProductDetail(productId) {
-            // Находим товар
-            const allProducts = [...PRODUCTS.hoodies, ...PRODUCTS.tshirts];
-            const product = allProducts.find(p => p.id === productId);
-
-            if (!product) return;
-
-            const mainView = document.getElementById('mainView');
-            const productsView = document.getElementById('productsView');
-            const productDetailView = document.getElementById('productDetailView');
-            const cartView = document.getElementById('cartView');
-            const backButton = document.getElementById('backButton');
-
-            mainView.style.display = 'none';
-            productsView.classList.remove('active');
-            cartView.classList.remove('active');
-            productDetailView.classList.add('active');
-            backButton.classList.add('active');
-
-            currentView = 'detail';
-
-            // Рендерим полную карточку товара
-            let html = `
-                <div class="header">
-                    <h1>${product.name}</h1>
-                    <p>№${product.id}</p>
-                </div>
-
-                <div class="product-detail-images">
-                    ${product.images.map((img, index) => `
-                        <img src="${img}" class="product-detail-image" alt="${product.name} - фото ${index + 1}">
-                    `).join('')}
-                </div>
-
-                <div class="product-card" style="margin-bottom: 80px;">
-                    <div class="product-info">
-                        <div class="product-header">
-                            <span class="product-number">№${product.id}</span>
-                            <span class="product-price">${product.price}</span>
-                        </div>
-                        <div class="product-name">${product.name}</div>
-                        <div style="margin: 12px 0; color: var(--tg-theme-hint-color, #999); font-size: 14px;">
-                            📸 Всего фотографий: ${product.images.length}
-                        </div>
-                        <button class="buy-button" onclick="addToCart(${product.id}, '${product.name}', '${product.price}', ${product.priceNum})">
-                            🛒 Добавить в корзину
-                        </button>
-                    </div>
-                </div>
-            `;
-
-            productDetailView.innerHTML = html;
-            window.scrollTo(0, 0);
         }
 
         function renderCart() {
@@ -785,15 +667,10 @@
                 `;
             } else {
                 products.forEach(product => {
-                    // Показываем первое фото и счётчик
-                    const firstImage = product.images[0];
-                    const imageCount = product.images.length;
-
                     html += `
                         <div class="product-card">
-                            <div style="position: relative;">
-                                <img src="${firstImage}" class="product-image" style="width: 100%; height: 300px; object-fit: cover; border-radius: 16px 16px 0 0;">
-                                <div class="image-counter">📸 ${imageCount} фото</div>
+                            <div class="product-images">
+                                ${product.images.map(img => `<img src="${img}" class="product-image">`).join('')}
                             </div>
                             <div class="product-info">
                                 <div class="product-header">
@@ -801,9 +678,6 @@
                                     <span class="product-price">${product.price}</span>
                                 </div>
                                 <div class="product-name">${product.name}</div>
-                                <button class="buy-button" style="background: #5856d6; margin-bottom: 8px;" onclick="showProductDetail(${product.id})">
-                                    🖼️ Карточка товара
-                                </button>
                                 <button class="buy-button" onclick="addToCart(${product.id}, '${product.name}', '${product.price}', ${product.priceNum})">
                                     🛒 Добавить в корзину
                                 </button>
@@ -820,27 +694,15 @@
         function goBack() {
             const mainView = document.getElementById('mainView');
             const productsView = document.getElementById('productsView');
-            const productDetailView = document.getElementById('productDetailView');
             const cartView = document.getElementById('cartView');
             const backButton = document.getElementById('backButton');
 
-            if (currentView === 'detail') {
-                // Возвращаемся к списку товаров
-                mainView.style.display = 'none';
-                productsView.classList.add('active');
-                productDetailView.classList.remove('active');
-                cartView.classList.remove('active');
-                currentView = 'products';
-            } else {
-                // Возвращаемся на главную
-                mainView.style.display = 'block';
-                productsView.classList.remove('active');
-                productDetailView.classList.remove('active');
-                cartView.classList.remove('active');
-                backButton.classList.remove('active');
-                currentView = 'main';
-            }
+            mainView.style.display = 'block';
+            productsView.classList.remove('active');
+            cartView.classList.remove('active');
+            backButton.classList.remove('active');
 
+            currentView = 'main';
             window.scrollTo(0, 0);
         }
 
