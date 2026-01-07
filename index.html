@@ -423,14 +423,20 @@
                     name: "Худи Berserk",
                     price: "6400 руб",
                     priceNum: 6400,
-                    images: ["https://via.placeholder.com/400x400/667eea/ffffff?text=Hoodie+1"]
+                    images: [
+                        "https://api.telegram.org/file/bot8196983313:AAFW_D_iURnlSm8Hv7UAGme4KLyvBy6XvSA/photos/file_1.jpg",
+                        "https://api.telegram.org/file/bot8196983313:AAFW_D_iURnlSm8Hv7UAGme4KLyvBy6XvSA/photos/file_2.jpg"
+                    ]
                 },
                 {
                     id: 2,
                     name: "Худи Berserk 2",
                     price: "5400 руб",
                     priceNum: 5400,
-                    images: ["https://via.placeholder.com/400x400/764ba2/ffffff?text=Hoodie+2"]
+                    images: [
+                        "https://via.placeholder.com/400x400/764ba2/ffffff?text=Hoodie+2",
+                        "https://via.placeholder.com/400x400/667eea/ffffff?text=Hoodie+2"
+                    ]
                 }
             ],
             tshirts: [
@@ -439,42 +445,60 @@
                     name: "Футболка Berserk 1",
                     price: "4600 руб",
                     priceNum: 4600,
-                    images: ["https://via.placeholder.com/400x400/f093fb/ffffff?text=Tshirt+1"]
+                    images: [
+                        "https://via.placeholder.com/400x400/f093fb/ffffff?text=Tshirt+1",
+                        "https://via.placeholder.com/400x400/4facfe/ffffff?text=Tshirt+1"
+                    ]
                 },
                 {
                     id: 4,
                     name: "Футболка Berserk 2",
                     price: "3000 руб",
                     priceNum: 3000,
-                    images: ["https://via.placeholder.com/400x400/4facfe/ffffff?text=Tshirt+2"]
+                    images: [
+                        "https://via.placeholder.com/400x400/4facfe/ffffff?text=Tshirt+2",
+                        "https://via.placeholder.com/400x400/00f2fe/ffffff?text=Tshirt+2"
+                    ]
                 },
                 {
                     id: 5,
                     name: "Футболка Berserk 3",
                     price: "3600 руб",
                     priceNum: 3600,
-                    images: ["https://via.placeholder.com/400x400/00f2fe/ffffff?text=Tshirt+3"]
+                    images: [
+                        "https://via.placeholder.com/400x400/00f2fe/ffffff?text=Tshirt+3",
+                        "https://via.placeholder.com/400x400/43e97b/ffffff?text=Tshirt+3"
+                    ]
                 },
                 {
                     id: 6,
                     name: "Футболка Ведьмак",
                     price: "4000 руб",
                     priceNum: 4000,
-                    images: ["https://via.placeholder.com/400x400/43e97b/ffffff?text=Tshirt+4"]
+                    images: [
+                        "https://via.placeholder.com/400x400/43e97b/ffffff?text=Tshirt+4",
+                        "https://via.placeholder.com/400x400/38f9d7/ffffff?text=Tshirt+4"
+                    ]
                 },
                 {
                     id: 7,
                     name: "Футболка Bleach 1",
                     price: "4500 руб",
                     priceNum: 4500,
-                    images: ["https://via.placeholder.com/400x400/38f9d7/ffffff?text=Tshirt+5"]
+                    images: [
+                        "https://via.placeholder.com/400x400/38f9d7/ffffff?text=Tshirt+5",
+                        "https://via.placeholder.com/400x400/fa709a/ffffff?text=Tshirt+5"
+                    ]
                 },
                 {
                     id: 8,
                     name: "Футболка Bleach 2",
                     price: "4500 руб",
                     priceNum: 4500,
-                    images: ["https://via.placeholder.com/400x400/fa709a/ffffff?text=Tshirt+6"]
+                    images: [
+                        "https://via.placeholder.com/400x400/fa709a/ffffff?text=Tshirt+6",
+                        "https://via.placeholder.com/400x400/f093fb/ffffff?text=Tshirt+6"
+                    ]
                 }
             ],
             themes: {
@@ -514,7 +538,7 @@
 
         function addToCart(id, name, price, priceNum) {
             const existingItem = cart.find(item => item.id === id);
-            
+
             if (existingItem) {
                 tg.showAlert('❌ Этот товар уже в корзине!');
                 return;
@@ -548,7 +572,7 @@
 
         function renderCart() {
             const cartItems = document.getElementById('cartItems');
-            
+
             if (cart.length === 0) {
                 cartItems.innerHTML = `
                     <div class="empty-state">
@@ -556,12 +580,11 @@
                         <p>Корзина пуста</p>
                     </div>
                 `;
-                // Скрываем главную кнопку Telegram
-                tg.MainButton.hide();
                 return;
             }
 
             let total = cart.reduce((sum, item) => sum + item.priceNum, 0);
+            const itemIds = cart.map(item => item.id).join(',');
 
             let html = '';
             cart.forEach(item => {
@@ -582,48 +605,49 @@
                 <div class="cart-total">
                     💰 Итого: ${total} руб
                 </div>
-                <button class="order-button" onclick="placeOrder()">
-                    ✅ Оформить заказ
+                <div style="background: var(--tg-theme-secondary-bg-color, #f0f0f0); border-radius: 12px; padding: 16px; margin-bottom: 16px; font-size: 14px; line-height: 1.5;">
+                    📝 <b>Для оформления заказа:</b><br><br>
+                    1. Нажмите кнопку ниже<br>
+                    2. Команда скопируется<br>
+                    3. Закройте приложение<br>
+                    4. Вставьте команду в чат с ботом и отправьте
+                </div>
+                <button class="order-button" onclick="copyOrderCommand('${itemIds}')">
+                    📋 Скопировать команду заказа
                 </button>
             `;
 
             cartItems.innerHTML = html;
-            
-            // Показываем главную кнопку Telegram
-            tg.MainButton.setText(`Оформить заказ (${total} руб)`);
-            tg.MainButton.show();
-            tg.MainButton.onClick(placeOrder);
+        }
+
+        function copyOrderCommand(itemIds) {
+            const command = `/order ${itemIds}`;
+
+            // Копируем в буфер обмена
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(command).then(() => {
+                    tg.showAlert('✅ Команда скопирована!\n\n' + command + '\n\nЗакройте приложение и вставьте команду в чат с ботом.');
+
+                    // Закрываем приложение через 2 секунды
+                    setTimeout(() => {
+                        tg.close();
+                    }, 2000);
+                }).catch(() => {
+                    // Если не получилось скопировать, показываем команду
+                    tg.showAlert('📝 Скопируйте эту команду:\n\n' + command + '\n\nЗатем закройте приложение и отправьте её боту.');
+                });
+            } else {
+                // Старый браузер - показываем команду
+                tg.showAlert('📝 Скопируйте эту команду:\n\n' + command + '\n\nЗатем закройте приложение и отправьте её боту.');
+            }
+
+            cart = [];
+            updateCartBadge();
         }
 
         async function placeOrder() {
-            if (cart.length === 0) {
-                tg.showAlert('❌ Корзина пуста!');
-                return;
-            }
-
-            const total = cart.reduce((sum, item) => sum + item.priceNum, 0);
-            const itemIds = cart.map(item => item.id).join(',');
-            const itemsList = cart.map(item => `${item.name} (${item.price})`).join('\n');
-
-            // Показываем финальное подтверждение
-            tg.showAlert(
-                '✅ Готово к отправке!\n\n' +
-                'Товары:\n' + itemsList + '\n\n' +
-                'Итого: ' + total + ' руб\n\n' +
-                'Сейчас приложение закроется и откроется чат с ботом. Нажмите на кнопку "Подтвердить заказ" чтобы отправить заказ продавцу.'
-            );
-
-            // Закрываем приложение и отправляем специальное сообщение боту
-            setTimeout(() => {
-                // Отправляем callback query с данными заказа
-                const orderCode = `order_${itemIds}_${total}_${Date.now()}`;
-
-                // Используем Telegram ссылку с start параметром
-                const botUsername = window.location.hostname.includes('github') ? 'YOUR_BOT_USERNAME' : 'gutsenj_bot';
-
-                tg.openTelegramLink(`https://t.me/gutsenj_bot?start=${btoa(orderCode)}`);
-                tg.close();
-            }, 1000);
+            // Эта функция больше не используется, но оставляем на всякий случай
+            tg.showAlert('Используйте кнопку "Скопировать команду заказа" в корзине');
         }
 
         function showCategory(category) {
