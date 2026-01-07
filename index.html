@@ -603,34 +603,27 @@
 
             const total = cart.reduce((sum, item) => sum + item.priceNum, 0);
             const itemIds = cart.map(item => item.id).join(',');
-            const itemsText = cart.map(item => item.name).join(', ');
-            
-            console.log('📦 Оформление заказа, товары:', itemIds);
-            
-            // Формируем данные для отправки
-            const orderData = {
-                ids: itemIds,
-                items: cart,
-                total: total
-            };
-            
-            // Показываем уведомление
+            const itemsList = cart.map(item => `${item.name} (${item.price})`).join('\n');
+
+            // Показываем финальное подтверждение
             tg.showAlert(
-                '✅ Товары добавлены в заказ!\n\n' +
-                itemsText + '\n\n' +
+                '✅ Готово к отправке!\n\n' +
+                'Товары:\n' + itemsList + '\n\n' +
                 'Итого: ' + total + ' руб\n\n' +
-                'Нажмите "Отправить заказ" для подтверждения'
+                'Сейчас приложение закроется и откроется чат с ботом. Нажмите на кнопку "Подтвердить заказ" чтобы отправить заказ продавцу.'
             );
-            
-            // Устанавливаем текст для главной кнопки
-            tg.MainButton.setText(`Отправить заказ (${total} руб)`);
-            tg.MainButton.show();
-            tg.MainButton.onClick(() => {
-                // Отправляем данные боту
-                const message = `ORDER_${itemIds}_${total}`;
-                console.log('Отправка:', message);
-                tg.sendData(message);
-            });
+
+            // Закрываем приложение и отправляем специальное сообщение боту
+            setTimeout(() => {
+                // Отправляем callback query с данными заказа
+                const orderCode = `order_${itemIds}_${total}_${Date.now()}`;
+
+                // Используем Telegram ссылку с start параметром
+                const botUsername = window.location.hostname.includes('github') ? 'YOUR_BOT_USERNAME' : 'gutsenj_bot';
+
+                tg.openTelegramLink(`https://t.me/gutsenj_bot?start=${btoa(orderCode)}`);
+                tg.close();
+            }, 1000);
         }
 
         function showCategory(category) {
