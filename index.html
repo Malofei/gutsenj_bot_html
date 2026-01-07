@@ -408,6 +408,11 @@
         const tg = window.Telegram.WebApp;
         tg.expand();
 
+        console.log('🚀 Telegram WebApp инициализирован');
+        console.log('📱 Version:', tg.version);
+        console.log('👤 User:', tg.initDataUnsafe.user);
+        console.log('🔧 Platform:', tg.platform);
+
         let cart = [];
         let currentView = 'main';
 
@@ -551,6 +556,8 @@
                         <p>Корзина пуста</p>
                     </div>
                 `;
+                // Скрываем главную кнопку Telegram
+                tg.MainButton.hide();
                 return;
             }
 
@@ -581,9 +588,14 @@
             `;
 
             cartItems.innerHTML = html;
+
+            // Показываем главную кнопку Telegram
+            tg.MainButton.setText(`Оформить заказ (${total} руб)`);
+            tg.MainButton.show();
+            tg.MainButton.onClick(placeOrder);
         }
 
-        function placeOrder() {
+        async function placeOrder() {
             if (cart.length === 0) {
                 tg.showAlert('❌ Корзина пуста!');
                 return;
@@ -596,14 +608,16 @@
                 action: 'order',
                 items: cart,
                 total: total,
-                user_id: tg.initDataUnsafe.user?.id,
-                username: tg.initDataUnsafe.user?.username,
-                first_name: tg.initDataUnsafe.user?.first_name,
-                last_name: tg.initDataUnsafe.user?.last_name
+                user_id: tg.initDataUnsafe.user?.id || 'unknown',
+                username: tg.initDataUnsafe.user?.username || '',
+                first_name: tg.initDataUnsafe.user?.first_name || 'Пользователь',
+                last_name: tg.initDataUnsafe.user?.last_name || ''
             };
 
             console.log('📦 Отправка заказа боту:', orderData);
+            console.log('📱 User info:', tg.initDataUnsafe.user);
 
+            // Показываем уведомление пользователю
             tg.showAlert(
                 '✅ Ваш заказ принят!\n\n' +
                 'Товары:\n' + orderItems + '\n\n' +
@@ -612,11 +626,25 @@
                 '(Если не напишет в течении 3 часов, свяжитесь с ним сами)'
             );
 
+            // Пытаемся отправить через Telegram API
             try {
-                tg.sendData(JSON.stringify(orderData));
-                console.log('✅ Данные отправлены боту успешно!');
+                const dataString = JSON.stringify(orderData);
+                console.log('📤 Попытка отправки через tg.sendData...');
+                tg.sendData(dataString);
+                console.log('✅ tg.sendData вызван успешно!');
             } catch (error) {
-                console.error('❌ Ошибка при отправке данных:', error);
+                console.error('❌ Ошибка при отправке через tg.sendData:', error);
+            }
+
+            // Также пытаемся отправить через MainButton (альтернативный способ)
+            try {
+                if (tg.MainButton) {
+                    tg.MainButton.setText('Заказ оформлен ✅');
+                    tg.MainButton.show();
+                    setTimeout(() => tg.MainButton.hide(), 2000);
+                }
+            } catch (e) {
+                console.log('MainButton недоступен');
             }
 
             cart = [];
