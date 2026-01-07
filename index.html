@@ -715,20 +715,68 @@
                     💰 Итого: ${total} руб
                 </div>
                 <div style="background: var(--tg-theme-secondary-bg-color, #f0f0f0); border-radius: 12px; padding: 16px; margin-bottom: 16px; font-size: 14px; line-height: 1.5;">
-                    📝 <b>Оформление заказа:</b><br><br>
-                    Нажмите кнопку ниже, чтобы отправить команду заказа в чат.
-                    Команда будет скопирована автоматически - просто отправьте её боту.
+                    📝 <b>Как оформить заказ:</b><br><br>
+                    1. Нажмите кнопку ниже<br>
+                    2. Команда скопируется автоматически<br>
+                    3. Приложение закроется<br>
+                    4. Вставьте команду в чат и отправьте
                 </div>
                 <button class="order-button" onclick="sendOrderToChat('${itemIds}')">
-                    ✅ Отправить заказ в чат
+                    📋 Скопировать команду заказа
                 </button>
             `;
 
             cartItems.innerHTML = html;
         }
 
+        function sendOrderToChat(itemIds) {
+            const command = `/order ${itemIds}`;
+
+            console.log('📦 Подготовка команды:', command);
+
+            // Показываем инструкцию
+            tg.showPopup({
+                title: '📝 Оформление заказа',
+                message: `Команда скопирована в буфер обмена!\n\n${command}\n\nСейчас приложение закроется. Вставьте команду в чат с ботом и отправьте её.`,
+                buttons: [{type: 'ok'}]
+            }, () => {
+                // Закрываем приложение после нажатия OK
+                tg.close();
+            });
+
+            // Копируем команду в буфер обмена
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(command).then(() => {
+                    console.log('✅ Команда скопирована в буфер обмена');
+                }).catch(err => {
+                    console.error('❌ Ошибка копирования:', err);
+                });
+            } else {
+                // Fallback для старых браузеров
+                const textArea = document.createElement('textarea');
+                textArea.value = command;
+                textArea.style.position = 'fixed';
+                textArea.style.left = '-999999px';
+                document.body.appendChild(textArea);
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    console.log('✅ Команда скопирована (fallback)');
+                } catch (err) {
+                    console.error('❌ Ошибка копирования (fallback):', err);
+                }
+                document.body.removeChild(textArea);
+            }
+
+            // Очищаем корзину
+            cart = [];
+            updateCartBadge();
+        }
+
         function placeOrder(itemIds, total) {
-            console.log('📦 Отправка заказа:', itemIds, total);
+            const command = `/order ${itemIds}`;
+
+            console.log('📦 Отправка заказа:', command);
 
             // Формируем данные для отправки
             const orderData = `ORDER_${itemIds}_${total}`;
