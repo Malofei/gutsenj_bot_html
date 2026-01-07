@@ -190,7 +190,6 @@
             font-weight: 600;
         }
 
-        /* Полная карточка товара */
         .product-detail {
             display: none;
         }
@@ -304,7 +303,6 @@
             margin-bottom: 16px;
         }
 
-        /* Корзина */
         .cart-view {
             display: none;
         }
@@ -554,7 +552,6 @@
                         "https://malofei.github.io/gutsenj_bot_html/images/tshka_kyoraku_2.jpg",
                         "https://malofei.github.io/gutsenj_bot_html/images/tshka_kyoraku_3.jpg",
                         "https://malofei.github.io/gutsenj_bot_html/images/tshka_kyoraku_4.jpg"
-
                     ]
                 }
             ],
@@ -630,7 +627,6 @@
         }
 
         function showProductDetail(productId) {
-            // Находим товар
             const allProducts = [...PRODUCTS.hoodies, ...PRODUCTS.tshirts];
             const product = allProducts.find(p => p.id === productId);
 
@@ -650,7 +646,6 @@
 
             currentView = 'detail';
 
-            // Рендерим полную карточку товара
             let html = `
                 <div class="header">
                     <h1>${product.name}</h1>
@@ -720,48 +715,37 @@
                     💰 Итого: ${total} руб
                 </div>
                 <div style="background: var(--tg-theme-secondary-bg-color, #f0f0f0); border-radius: 12px; padding: 16px; margin-bottom: 16px; font-size: 14px; line-height: 1.5;">
-                    📝 <b>Для оформления заказа:</b><br><br>
-                    1. Нажмите кнопку ниже<br>
-                    2. Команда скопируется<br>
-                    3. Закройте приложение<br>
-                    4. Вставьте команду в чат с ботом и отправьте
+                    📝 <b>Оформление заказа:</b><br><br>
+                    Нажмите кнопку ниже, чтобы отправить заказ в бот.
+                    После этого подтвердите заказ в чате с ботом.
                 </div>
-                <button class="order-button" onclick="copyOrderCommand('${itemIds}')">
-                    📋 Скопировать команду заказа
+                <button class="order-button" onclick="placeOrder('${itemIds}', ${total})">
+                    ✅ Оформить заказ
                 </button>
             `;
 
             cartItems.innerHTML = html;
         }
 
-        function copyOrderCommand(itemIds) {
+        function placeOrder(itemIds, total) {
             const command = `/order ${itemIds}`;
 
-            // Копируем в буфер обмена
-            if (navigator.clipboard) {
-                navigator.clipboard.writeText(command).then(() => {
-                    tg.showAlert('✅ Команда скопирована!\n\n' + command + '\n\nЗакройте приложение и вставьте команду в чат с ботом.');
+            console.log('📦 Отправка заказа:', command);
 
-                    // Закрываем приложение через 2 секунды
-                    setTimeout(() => {
-                        tg.close();
-                    }, 2000);
-                }).catch(() => {
-                    // Если не получилось скопировать, показываем команду
-                    tg.showAlert('📝 Скопируйте эту команду:\n\n' + command + '\n\nЗатем закройте приложение и отправьте её боту.');
-                });
-            } else {
-                // Старый браузер - показываем команду
-                tg.showAlert('📝 Скопируйте эту команду:\n\n' + command + '\n\nЗатем закройте приложение и отправьте её боту.');
-            }
+            // Показываем уведомление
+            tg.showAlert('✅ Заказ отправлен в бот!\n\nПодтвердите заказ в чате с ботом, нажав кнопку "Подтвердить заказ".');
 
+            // Отправляем команду в чат с ботом
+            tg.sendData(command);
+
+            // Очищаем корзину
             cart = [];
             updateCartBadge();
-        }
 
-        async function placeOrder() {
-            // Эта функция больше не используется, но оставляем на всякий случай
-            tg.showAlert('Используйте кнопку "Скопировать команду заказа" в корзине');
+            // Закрываем приложение через 1 секунду
+            setTimeout(() => {
+                tg.close();
+            }, 1000);
         }
 
         function showCategory(category) {
@@ -805,7 +789,6 @@
                 `;
             } else {
                 products.forEach(product => {
-                    // Показываем первое фото и счётчик
                     const firstImage = product.images[0];
                     const imageCount = product.images.length;
 
@@ -845,14 +828,12 @@
             const backButton = document.getElementById('backButton');
 
             if (currentView === 'detail') {
-                // Возвращаемся к списку товаров
                 mainView.style.display = 'none';
                 productsView.classList.add('active');
                 productDetailView.classList.remove('active');
                 cartView.classList.remove('active');
                 currentView = 'products';
             } else {
-                // Возвращаемся на главную
                 mainView.style.display = 'block';
                 productsView.classList.remove('active');
                 productDetailView.classList.remove('active');
