@@ -407,7 +407,7 @@
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
-
+        
         console.log('🚀 Telegram WebApp инициализирован');
         console.log('📱 Version:', tg.version);
         console.log('👤 User:', tg.initDataUnsafe.user);
@@ -514,7 +514,7 @@
 
         function addToCart(id, name, price, priceNum) {
             const existingItem = cart.find(item => item.id === id);
-
+            
             if (existingItem) {
                 tg.showAlert('❌ Этот товар уже в корзине!');
                 return;
@@ -548,7 +548,7 @@
 
         function renderCart() {
             const cartItems = document.getElementById('cartItems');
-
+            
             if (cart.length === 0) {
                 cartItems.innerHTML = `
                     <div class="empty-state">
@@ -588,7 +588,7 @@
             `;
 
             cartItems.innerHTML = html;
-
+            
             // Показываем главную кнопку Telegram
             tg.MainButton.setText(`Оформить заказ (${total} руб)`);
             tg.MainButton.show();
@@ -603,33 +603,34 @@
 
             const total = cart.reduce((sum, item) => sum + item.priceNum, 0);
             const itemIds = cart.map(item => item.id).join(',');
-
-            // Сохраняем заказ в localStorage для передачи боту
+            const itemsText = cart.map(item => item.name).join(', ');
+            
+            console.log('📦 Оформление заказа, товары:', itemIds);
+            
+            // Формируем данные для отправки
             const orderData = {
+                ids: itemIds,
                 items: cart,
-                total: total,
-                timestamp: Date.now()
+                total: total
             };
-
-            try {
-                localStorage.setItem('pendingOrder', JSON.stringify(orderData));
-            } catch (e) {
-                console.log('localStorage недоступен');
-            }
-
-            // Показываем инструкцию пользователю
+            
+            // Показываем уведомление
             tg.showAlert(
-                '✅ Готово!\n\n' +
-                'Сейчас приложение закроется.\n\n' +
-                'Отправьте боту команду:\n' +
-                '/order ' + itemIds + '\n\n' +
-                'Команда уже скопирована, просто вставьте её в чат с ботом!'
+                '✅ Товары добавлены в заказ!\n\n' +
+                itemsText + '\n\n' +
+                'Итого: ' + total + ' руб\n\n' +
+                'Нажмите "Отправить заказ" для подтверждения'
             );
-
-            // Закрываем приложение
-            setTimeout(() => {
-                tg.close();
-            }, 500);
+            
+            // Устанавливаем текст для главной кнопки
+            tg.MainButton.setText(`Отправить заказ (${total} руб)`);
+            tg.MainButton.show();
+            tg.MainButton.onClick(() => {
+                // Отправляем данные боту
+                const message = `ORDER_${itemIds}_${total}`;
+                console.log('Отправка:', message);
+                tg.sendData(message);
+            });
         }
 
         function showCategory(category) {
