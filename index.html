@@ -601,55 +601,48 @@
                 return;
             }
 
-            const orderItems = cart.map(item => `№${item.id} - ${item.name} (${item.price})`).join('\n');
             const total = cart.reduce((sum, item) => sum + item.priceNum, 0);
+            const orderItems = cart.map(item => `${item.id}`).join(',');
 
-            const orderData = {
-                action: 'order',
-                items: cart,
-                total: total,
-                user_id: tg.initDataUnsafe.user?.id || 'unknown',
-                username: tg.initDataUnsafe.user?.username || '',
-                first_name: tg.initDataUnsafe.user?.first_name || 'Пользователь',
-                last_name: tg.initDataUnsafe.user?.last_name || ''
-            };
+            console.log('📦 Оформление заказа');
+            console.log('🛒 Товары:', orderItems);
+            console.log('💰 Сумма:', total);
 
-            console.log('📦 Отправка заказа боту:', orderData);
-            console.log('📱 User info:', tg.initDataUnsafe.user);
+            // Формируем сообщение для отправки
+            const message = `ORDER:${orderItems}:${total}`;
+
+            console.log('📤 Отправка сообщения боту:', message);
 
             // Показываем уведомление пользователю
             tg.showAlert(
                 '✅ Ваш заказ принят!\n\n' +
-                'Товары:\n' + orderItems + '\n\n' +
+                'Товары: ' + cart.map(item => item.name).join(', ') + '\n\n' +
                 'Итого: ' + total + ' руб\n\n' +
                 'Скоро с вами свяжется продавец @guts_enj0yer для уточнения деталей доставки и оплаты.\n\n' +
                 '(Если не напишет в течении 3 часов, свяжитесь с ним сами)'
             );
 
-            // Пытаемся отправить через Telegram API
+            // Пытаемся отправить данные разными способами
             try {
-                const dataString = JSON.stringify(orderData);
-                console.log('📤 Попытка отправки через tg.sendData...');
-                tg.sendData(dataString);
-                console.log('✅ tg.sendData вызван успешно!');
-            } catch (error) {
-                console.error('❌ Ошибка при отправке через tg.sendData:', error);
+                // Способ 1: sendData
+                console.log('Попытка 1: tg.sendData');
+                tg.sendData(message);
+            } catch (e) {
+                console.error('tg.sendData failed:', e);
             }
 
-            // Также пытаемся отправить через MainButton (альтернативный способ)
+            // Способ 2: Закрываем приложение с данными
             try {
-                if (tg.MainButton) {
-                    tg.MainButton.setText('Заказ оформлен ✅');
-                    tg.MainButton.show();
-                    setTimeout(() => tg.MainButton.hide(), 2000);
-                }
+                console.log('Попытка 2: tg.close с данными');
+                setTimeout(() => {
+                    tg.close();
+                }, 1000);
             } catch (e) {
-                console.log('MainButton недоступен');
+                console.error('tg.close failed:', e);
             }
 
             cart = [];
             updateCartBadge();
-            renderCart();
         }
 
         function showCategory(category) {
