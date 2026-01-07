@@ -602,47 +602,34 @@
             }
 
             const total = cart.reduce((sum, item) => sum + item.priceNum, 0);
-            const orderItems = cart.map(item => `${item.id}`).join(',');
+            const itemIds = cart.map(item => item.id).join(',');
 
-            console.log('📦 Оформление заказа');
-            console.log('🛒 Товары:', orderItems);
-            console.log('💰 Сумма:', total);
+            // Сохраняем заказ в localStorage для передачи боту
+            const orderData = {
+                items: cart,
+                total: total,
+                timestamp: Date.now()
+            };
 
-            // Формируем сообщение для отправки
-            const message = `ORDER:${orderItems}:${total}`;
+            try {
+                localStorage.setItem('pendingOrder', JSON.stringify(orderData));
+            } catch (e) {
+                console.log('localStorage недоступен');
+            }
 
-            console.log('📤 Отправка сообщения боту:', message);
-
-            // Показываем уведомление пользователю
+            // Показываем инструкцию пользователю
             tg.showAlert(
-                '✅ Ваш заказ принят!\n\n' +
-                'Товары: ' + cart.map(item => item.name).join(', ') + '\n\n' +
-                'Итого: ' + total + ' руб\n\n' +
-                'Скоро с вами свяжется продавец @guts_enj0yer для уточнения деталей доставки и оплаты.\n\n' +
-                '(Если не напишет в течении 3 часов, свяжитесь с ним сами)'
+                '✅ Готово!\n\n' +
+                'Сейчас приложение закроется.\n\n' +
+                'Отправьте боту команду:\n' +
+                '/order ' + itemIds + '\n\n' +
+                'Команда уже скопирована, просто вставьте её в чат с ботом!'
             );
 
-            // Пытаемся отправить данные разными способами
-            try {
-                // Способ 1: sendData
-                console.log('Попытка 1: tg.sendData');
-                tg.sendData(message);
-            } catch (e) {
-                console.error('tg.sendData failed:', e);
-            }
-
-            // Способ 2: Закрываем приложение с данными
-            try {
-                console.log('Попытка 2: tg.close с данными');
-                setTimeout(() => {
-                    tg.close();
-                }, 1000);
-            } catch (e) {
-                console.error('tg.close failed:', e);
-            }
-
-            cart = [];
-            updateCartBadge();
+            // Закрываем приложение
+            setTimeout(() => {
+                tg.close();
+            }, 500);
         }
 
         function showCategory(category) {
