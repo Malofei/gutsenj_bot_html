@@ -395,10 +395,10 @@
         <div class="section-title">Категории</div>
         <div class="categories-grid">
             <div class="category-card" onclick="showCategory('tshirts')">
-                👕 Футболки
+                Футболки
             </div>
             <div class="category-card" onclick="showCategory('hoodies')">
-                👘 Худи
+                Худи
             </div>
         </div>
 
@@ -420,11 +420,13 @@
                 <div class="theme-name">Магическая битва</div>
             </div>
             <div class="theme-card" onclick="showTheme('hollow')">
-                <div class="theme-image">🦋</div>
+                <div class="theme-image" style="background-image: url('https://malofei.github.io/gutsenj_bot_html/images/logo_witcher.png');">
+                </div>
                 <div class="theme-name">Hollow Knight</div>
             </div>
             <div class="theme-card" onclick="showTheme('witcher')">
-                <div class="theme-image">🐺</div>
+                <div class="theme-image" style="background-image: url('https://malofei.github.io/gutsenj_bot_html/images/logo_witcher.jpg');">
+                </div>
                 <div class="theme-name">Ведьмак</div>
             </div>
         </div>
@@ -629,13 +631,13 @@
         };
 
         const THEME_INFO = {
-            tshirts: { title: "👕 Футболки", info: "Состав: Хлопок 92% / Эластан 8%\nПлотность: 240гр.\nКрой: прямой\n\nВ цену входит доставка по СПб" },
-            hoodies: { title: "👘 Худи", info: "Состав: Хлопок 100%\nПлотность 280гр./320гр.\n\nВ цену входит доставка по СПб" },
-            berserk: { title: "⚔️ Берсерк", info: "Коллекция по мотивам манги Берсерк" },
-            bleach: { title: "🗡️ Блич", info: "Коллекция по мотивам аниме Блич" },
-            jujutsu: { title: "✨ Магическая битва", info: "Коллекция Jujutsu Kaisen" },
-            hollow: { title: "🦋 Hollow Knight", info: "Коллекция по мотивам игры Hollow Knight" },
-            witcher: { title: "🐺 Ведьмак", info: "Коллекция по мотивам Ведьмака" }
+            tshirts: { title: "Футболки", info: "Состав: Хлопок 92% / Эластан 8%\nПлотность: 240гр.\nКрой: прямой\n\nВ цену входит доставка по СПб" },
+            hoodies: { title: "Худи", info: "Состав: Хлопок 100%\nПлотность 280гр./320гр.\n\nВ цену входит доставка по СПб" },
+            berserk: { title: "⚔Берсерк", info: "Коллекция по мотивам манги Берсерк" },
+            bleach: { title: "Блич", info: "Коллекция по мотивам аниме Блич" },
+            jujutsu: { title: "Магическая битва", info: "Коллекция Jujutsu Kaisen" },
+            hollow: { title: "Hollow Knight", info: "Коллекция по мотивам игры Hollow Knight" },
+            witcher: { title: "Ведьмак", info: "Коллекция по мотивам Ведьмака" }
         };
 
         function updateCartBadge() {
