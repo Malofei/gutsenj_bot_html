@@ -134,6 +134,8 @@
             align-items: center;
             justify-content: center;
             font-size: 40px;
+            background-size: cover;
+            background-position: center;
         }
 
         .theme-name {
@@ -390,7 +392,7 @@
             <p>Выберите категорию или тематику</p>
         </div>
 
-        <div class="section-title">📦 Категории</div>
+        <div class="section-title">Категории</div>
         <div class="categories-grid">
             <div class="category-card" onclick="showCategory('tshirts')">
                 👕 Футболки
@@ -400,18 +402,21 @@
             </div>
         </div>
 
-        <div class="section-title">🎨 Тематики</div>
+        <div class="section-title">Тематики</div>
         <div class="themes-grid">
             <div class="theme-card" onclick="showTheme('berserk')">
-                <div class="theme-image">⚔️</div>
+                <div class="theme-image" style="background-image: url('https://malofei.github.io/gutsenj_bot_html/images/logo_berserk.png');">
+                </div>
                 <div class="theme-name">Берсерк</div>
             </div>
             <div class="theme-card" onclick="showTheme('bleach')">
-                <div class="theme-image">🗡️</div>
+                <div class="theme-image" style="background-image: url('https://malofei.github.io/gutsenj_bot_html/images/logo_bleach.png');">
+                </div>
                 <div class="theme-name">Блич</div>
             </div>
             <div class="theme-card" onclick="showTheme('jujutsu')">
-                <div class="theme-image">✨</div>
+                <div class="theme-image" style="background-image: url('https://malofei.github.io/gutsenj_bot_html/images/logo_witcher.png');">
+                </div>
                 <div class="theme-name">Магическая битва</div>
             </div>
             <div class="theme-card" onclick="showTheme('hollow')">
@@ -616,48 +621,10 @@
                         ]
                     }
                 ],
-                bleach: [
-                    {
-                        id: 7,
-                        name: "Футболка Bleach 1",
-                        price: "4500 руб",
-                        priceNum: 4500,
-                        images: [
-                            "https://malofei.github.io/gutsenj_bot_html/images/tshka_urahara_1.jpg",
-                            "https://malofei.github.io/gutsenj_bot_html/images/tshka_urahara_2.jpg",
-                            "https://malofei.github.io/gutsenj_bot_html/images/tshka_urahara_3.jpg",
-                            "https://malofei.github.io/gutsenj_bot_html/images/tshka_urahara_4.jpg"
-                        ]
-                    },
-                    {
-                        id: 8,
-                        name: "Футболка Bleach 2",
-                        price: "4500 руб",
-                        priceNum: 4500,
-                        images: [
-                            "https://malofei.github.io/gutsenj_bot_html/images/tshka_kyoraku_1.jpg",
-                            "https://malofei.github.io/gutsenj_bot_html/images/tshka_kyoraku_2.jpg",
-                            "https://malofei.github.io/gutsenj_bot_html/images/tshka_kyoraku_3.jpg",
-                            "https://malofei.github.io/gutsenj_bot_html/images/tshka_kyoraku_4.jpg"
-                        ]
-                    }
-                ],
+                bleach: [],
                 jujutsu: [],
                 hollow: [],
-                witcher: [
-                    {
-                        id: 6,
-                        name: "Футболка Ведьмак",
-                        price: "4000 руб",
-                        priceNum: 4000,
-                        images: [
-                            "https://malofei.github.io/gutsenj_bot_html/images/tshka_witcher_1.jpg",
-                            "https://malofei.github.io/gutsenj_bot_html/images/tshka_witcher_2.jpg",
-                            "https://malofei.github.io/gutsenj_bot_html/images/tshka_witcher_3.jpg",
-                            "https://malofei.github.io/gutsenj_bot_html/images/tshka_witcher_4.jpg"
-                        ]
-                    }
-                ]
+                witcher: []
             }
         };
 
