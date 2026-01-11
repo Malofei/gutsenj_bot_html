@@ -967,19 +967,28 @@
         }
 
         function showTheme(theme) {
-            displayProducts(PRODUCTS.themes[theme], THEME_INFO[theme].title, THEME_INFO[theme].info);
+            const themeProducts = PRODUCTS.themes[theme];
+            const themeInfo = THEME_INFO[theme];
+
+            if (!themeProducts || !themeInfo) {
+                console.error('Theme not found:', theme);
+                return;
+            }
+
+            displayProducts(themeProducts, themeInfo.title, themeInfo.info);
         }
 
         function displayProducts(products, title, info) {
             document.getElementById('mainView').style.display = 'none';
             document.getElementById('cartView').classList.remove('active');
+            document.getElementById('productDetailView').classList.remove('active');
             document.getElementById('productsView').classList.add('active');
             document.getElementById('backButton').classList.add('active');
             currentView = 'products';
 
             let html = `<div class="header"><h1>${title}</h1></div><div class="info-text">${info.replace(/\n/g, '<br>')}</div>`;
 
-            if (products.length === 0) {
+            if (!products || products.length === 0) {
                 html += '<div class="empty-state"><div class="empty-state-icon">📦</div><p>Товары скоро появятся</p></div>';
             } else {
                 products.forEach((product, productIndex) => {
@@ -1020,30 +1029,32 @@
             document.getElementById('productsView').innerHTML = html;
 
             // Инициализация обработчиков скролла для каждой карусели
-            if (products.length > 0) {
-                products.forEach((product, productIndex) => {
-                    const carouselId = `carousel-${productIndex}`;
-                    const dotsId = `dots-${productIndex}`;
-                    const carousel = document.getElementById(carouselId);
-                    const dots = document.getElementById(dotsId);
+            if (products && products.length > 0) {
+                setTimeout(() => {
+                    products.forEach((product, productIndex) => {
+                        const carouselId = `carousel-${productIndex}`;
+                        const dotsId = `dots-${productIndex}`;
+                        const carousel = document.getElementById(carouselId);
+                        const dots = document.getElementById(dotsId);
 
-                    if (carousel && dots) {
-                        carousel.addEventListener('scroll', () => {
-                            const scrollLeft = carousel.scrollLeft;
-                            const itemWidth = carousel.offsetWidth;
-                            const currentIndex = Math.round(scrollLeft / itemWidth);
+                        if (carousel && dots) {
+                            carousel.addEventListener('scroll', () => {
+                                const scrollLeft = carousel.scrollLeft;
+                                const itemWidth = carousel.offsetWidth;
+                                const currentIndex = Math.round(scrollLeft / itemWidth);
 
-                            const dotElements = dots.querySelectorAll('.carousel-dot');
-                            dotElements.forEach((dot, i) => {
-                                if (i === currentIndex) {
-                                    dot.classList.add('active');
-                                } else {
-                                    dot.classList.remove('active');
-                                }
+                                const dotElements = dots.querySelectorAll('.carousel-dot');
+                                dotElements.forEach((dot, i) => {
+                                    if (i === currentIndex) {
+                                        dot.classList.add('active');
+                                    } else {
+                                        dot.classList.remove('active');
+                                    }
+                                });
                             });
-                        });
-                    }
-                });
+                        }
+                    });
+                }, 100);
             }
 
             window.scrollTo(0, 0);
@@ -1097,3 +1108,29 @@
     </script>
 </body>
 </html>
+                bleach: [
+                    {
+                        id: 7,
+                        name: "Футболка Bleach 1",
+                        price: "4500 руб",
+                        priceNum: 4500,
+                        images: [
+                            "https://malofei.github.io/gutsenj_bot_html/images/tshka_urahara_1.jpg",
+                            "https://malofei.github.io/gutsenj_bot_html/images/tshka_urahara_2.jpg",
+                            "https://malofei.github.io/gutsenj_bot_html/images/tshka_urahara_3.jpg",
+                            "https://malofei.github.io/gutsenj_bot_html/images/tshka_urahara_4.jpg"
+                        ]
+                    },
+                    {
+                        id: 8,
+                        name: "Футболка Bleach 2",
+                        price: "4500 руб",
+                        priceNum: 4500,
+                        images: [
+                            "https://malofei.github.io/gutsenj_bot_html/images/tshka_kyoraku_1.jpg",
+                            "https://malofei.github.io/gutsenj_bot_html/images/tshka_kyoraku_2.jpg",
+                            "https://malofei.github.io/gutsenj_bot_html/images/tshka_kyoraku_3.jpg",
+                            "https://malofei.github.io/gutsenj_bot_html/images/tshka_kyoraku_4.jpg"
+                        ]
+                    }
+                ],
