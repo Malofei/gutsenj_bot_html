@@ -192,6 +192,60 @@
             font-weight: 600;
         }
 
+        .product-carousel {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            overflow: hidden;
+            border-radius: 16px 16px 0 0;
+        }
+
+        .product-carousel-track {
+            display: flex;
+            height: 100%;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        .product-carousel-track::-webkit-scrollbar {
+            display: none;
+        }
+
+        .product-carousel-image {
+            width: 100%;
+            height: 100%;
+            flex-shrink: 0;
+            scroll-snap-align: start;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        .carousel-dots {
+            position: absolute;
+            bottom: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 6px;
+            z-index: 10;
+        }
+
+        .carousel-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            transition: all 0.3s;
+        }
+
+        .carousel-dot.active {
+            background: white;
+            width: 20px;
+            border-radius: 3px;
+        }
+
         .product-detail {
             display: none;
         }
@@ -928,15 +982,22 @@
             if (products.length === 0) {
                 html += '<div class="empty-state"><div class="empty-state-icon">📦</div><p>Товары скоро появятся</p></div>';
             } else {
-                products.forEach(product => {
-                    const firstImage = product.images[0];
+                products.forEach((product, productIndex) => {
                     const imageCount = product.images.length;
-                    const imagesJson = JSON.stringify(product.images).replace(/"/g, '&quot;');
+                    const carouselId = `carousel-${productIndex}`;
+                    const dotsId = `dots-${productIndex}`;
+
                     html += `
                         <div class="product-card">
-                            <div style="position: relative;">
-                                <img src="${firstImage}" class="product-image clickable-image" style="width: 100%; height: 300px; object-fit: cover; border-radius: 16px 16px 0 0;" onclick='openCarousel(${imagesJson}, 0)'>
-                                <div class="image-counter">📸 ${imageCount} фото</div>
+                            <div class="product-carousel">
+                                <div class="product-carousel-track" id="${carouselId}">
+                                    ${product.images.map((img, i) => `
+                                        <img src="${img}" class="product-carousel-image" alt="${product.name} - фото ${i + 1}">
+                                    `).join('')}
+                                </div>
+                                <div class="carousel-dots" id="${dotsId}">
+                                    ${product.images.map((_, i) => `<div class="carousel-dot ${i === 0 ? 'active' : ''}"></div>`).join('')}
+                                </div>
                             </div>
                             <div class="product-info">
                                 <div class="product-header">
@@ -957,6 +1018,34 @@
             }
 
             document.getElementById('productsView').innerHTML = html;
+
+            // Инициализация обработчиков скролла для каждой карусели
+            if (products.length > 0) {
+                products.forEach((product, productIndex) => {
+                    const carouselId = `carousel-${productIndex}`;
+                    const dotsId = `dots-${productIndex}`;
+                    const carousel = document.getElementById(carouselId);
+                    const dots = document.getElementById(dotsId);
+
+                    if (carousel && dots) {
+                        carousel.addEventListener('scroll', () => {
+                            const scrollLeft = carousel.scrollLeft;
+                            const itemWidth = carousel.offsetWidth;
+                            const currentIndex = Math.round(scrollLeft / itemWidth);
+
+                            const dotElements = dots.querySelectorAll('.carousel-dot');
+                            dotElements.forEach((dot, i) => {
+                                if (i === currentIndex) {
+                                    dot.classList.add('active');
+                                } else {
+                                    dot.classList.remove('active');
+                                }
+                            });
+                        });
+                    }
+                });
+            }
+
             window.scrollTo(0, 0);
         }
 
