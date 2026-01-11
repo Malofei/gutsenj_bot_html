@@ -378,6 +378,94 @@
             background: #ccc;
             cursor: not-allowed;
         }
+
+        .carousel-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .carousel-modal.active {
+            display: flex;
+        }
+
+        .carousel-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .carousel-image {
+            max-width: 90%;
+            max-height: 70%;
+            object-fit: contain;
+        }
+
+        .carousel-prev,
+        .carousel-next {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 2001;
+        }
+
+        .carousel-prev {
+            left: 16px;
+        }
+
+        .carousel-next {
+            right: 16px;
+        }
+
+        .carousel-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 2001;
+        }
+
+        .carousel-counter {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .clickable-image {
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -451,12 +539,24 @@
 
     <button class="back-button" id="backButton" onclick="goBack()">◀️ Назад</button>
 
+    <div id="carouselModal" class="carousel-modal">
+        <div class="carousel-container">
+            <button class="carousel-close" onclick="closeCarousel()">✕</button>
+            <button class="carousel-prev" onclick="prevImage()">‹</button>
+            <img id="carouselImage" class="carousel-image" src="" alt="Товар">
+            <button class="carousel-next" onclick="nextImage()">›</button>
+            <div class="carousel-counter" id="carouselCounter">1 / 1</div>
+        </div>
+    </div>
+
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
 
         let cart = [];
         let currentView = 'main';
+        let carouselImages = [];
+        let currentImageIndex = 0;
 
         const PRODUCTS = {
             hoodies: [
@@ -640,32 +740,6 @@
                         ]
                     }
                 ],
-                bleach: [
-                    {
-                        id: 7,
-                        name: "Футболка Bleach 1",
-                        price: "4500 руб",
-                        priceNum: 4500,
-                        images: [
-                            "https://malofei.github.io/gutsenj_bot_html/images/tshka_urahara_1.jpg",
-                            "https://malofei.github.io/gutsenj_bot_html/images/tshka_urahara_2.jpg",
-                            "https://malofei.github.io/gutsenj_bot_html/images/tshka_urahara_3.jpg",
-                            "https://malofei.github.io/gutsenj_bot_html/images/tshka_urahara_4.jpg"
-                        ]
-                    },
-                    {
-                        id: 8,
-                        name: "Футболка Bleach 2",
-                        price: "4500 руб",
-                        priceNum: 4500,
-                        images: [
-                            "https://malofei.github.io/gutsenj_bot_html/images/tshka_kyoraku_1.jpg",
-                            "https://malofei.github.io/gutsenj_bot_html/images/tshka_kyoraku_2.jpg",
-                            "https://malofei.github.io/gutsenj_bot_html/images/tshka_kyoraku_3.jpg",
-                            "https://malofei.github.io/gutsenj_bot_html/images/tshka_kyoraku_4.jpg"
-                        ]
-                    }
-                ],
                 jujutsu: [],
                 hollow: [],
                 dmc: [
@@ -706,7 +780,7 @@
             bleach: { title: "Блич", info: "Коллекция по мотивам аниме Блич" },
             jujutsu: { title: "Магическая битва", info: "Коллекция Jujutsu Kaisen" },
             hollow: { title: "Hollow Knight", info: "Коллекция по мотивам игры Hollow Knight" },
-            dmc: {title: "Devil May Cry", info: "Коллекция по мотивам игр серии Devil May Cry"},
+            dmc: { title: "Devil May Cry", info: "Коллекция по мотивам игр серии Devil May Cry" },
             witcher: { title: "Ведьмак", info: "Коллекция по мотивам Ведьмака" }
         };
 
@@ -765,7 +839,7 @@
                     <p>№${product.id}</p>
                 </div>
                 <div class="product-detail-images">
-                    ${product.images.map((img, i) => `<img src="${img}" class="product-detail-image" alt="${product.name} - фото ${i + 1}">`).join('')}
+                    ${product.images.map((img, i) => `<img src="${img}" class="product-detail-image clickable-image" alt="${product.name} - фото ${i + 1}" onclick="openCarousel(${JSON.stringify(product.images)}, ${i})">`).join('')}
                 </div>
                 <div class="product-card" style="margin-bottom: 80px;">
                     <div class="product-info">
@@ -857,10 +931,11 @@
                 products.forEach(product => {
                     const firstImage = product.images[0];
                     const imageCount = product.images.length;
+                    const imagesJson = JSON.stringify(product.images).replace(/"/g, '&quot;');
                     html += `
                         <div class="product-card">
                             <div style="position: relative;">
-                                <img src="${firstImage}" class="product-image" style="width: 100%; height: 300px; object-fit: cover; border-radius: 16px 16px 0 0;">
+                                <img src="${firstImage}" class="product-image clickable-image" style="width: 100%; height: 300px; object-fit: cover; border-radius: 16px 16px 0 0;" onclick='openCarousel(${imagesJson}, 0)'>
                                 <div class="image-counter">📸 ${imageCount} фото</div>
                             </div>
                             <div class="product-info">
@@ -901,6 +976,32 @@
                 currentView = 'main';
             }
             window.scrollTo(0, 0);
+        }
+
+        function openCarousel(images, startIndex = 0) {
+            carouselImages = images;
+            currentImageIndex = startIndex;
+            updateCarouselImage();
+            document.getElementById('carouselModal').classList.add('active');
+        }
+
+        function closeCarousel() {
+            document.getElementById('carouselModal').classList.remove('active');
+        }
+
+        function updateCarouselImage() {
+            document.getElementById('carouselImage').src = carouselImages[currentImageIndex];
+            document.getElementById('carouselCounter').textContent = `${currentImageIndex + 1} / ${carouselImages.length}`;
+        }
+
+        function nextImage() {
+            currentImageIndex = (currentImageIndex + 1) % carouselImages.length;
+            updateCarouselImage();
+        }
+
+        function prevImage() {
+            currentImageIndex = (currentImageIndex - 1 + carouselImages.length) % carouselImages.length;
+            updateCarouselImage();
         }
 
         updateCartBadge();
