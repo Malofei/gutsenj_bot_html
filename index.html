@@ -886,6 +886,16 @@
             tg.showAlert('✅ Товар добавлен в корзину!\n\n' + name + '\n' + price);
         }
 
+        function addToCartById(productId) {
+            const allProducts = [...PRODUCTS.hoodies, ...PRODUCTS.tshirts];
+            const product = allProducts.find(p => p.id === productId);
+            if (!product) {
+                tg.showAlert('❌ Товар не найден!');
+                return;
+            }
+            addToCart(product.id, product.name, product.price, product.priceNum);
+        }
+
         function removeFromCart(id) {
             cart = cart.filter(item => item.id !== id);
             updateCartBadge();
@@ -932,7 +942,7 @@
                         <div style="margin: 12px 0; color: var(--tg-theme-hint-color, #999); font-size: 14px;">
                             📸 Всего фотографий: ${product.images.length}
                         </div>
-                        <button class="buy-button" onclick="addToCart(${product.id}, \`${product.name}\`, '${product.price}', ${product.priceNum})">
+                        <button class="buy-button" onclick="addToCartById(${product.id})">
                             🛒 Добавить в корзину
                         </button>
                     </div>
@@ -973,17 +983,16 @@
             }
 
             const total = cart.reduce((sum, item) => sum + item.priceNum, 0);
-            const itemIds = cart.map(item => item.id).join(',');
+            const orderData = cart.map(item => `${item.id}:${item.name}:${item.price}`).join('|');
             const itemsList = cart.map(item => `• ${item.name} - ${item.price}`).join('\n');
 
             tg.showAlert('📦 Ваш заказ:\n\n' + itemsList + '\n\n💰 Итого: ' + total + ' руб\n\nСейчас откроется чат с ботом для подтверждения заказа.');
 
-            const orderCode = `order_${itemIds}_${total}_${Date.now()}`;
-            const encodedOrder = btoa(orderCode);
+            const orderCode = `order_${Date.now()}_${total}_${encodeURIComponent(orderData)}`;
 
             setTimeout(() => {
                 const botUsername = 'gutsenj_bot';
-                const deepLink = `https://t.me/${botUsername}?start=${encodedOrder}`;
+                const deepLink = `https://t.me/${botUsername}?start=${orderCode}`;
                 tg.openTelegramLink(deepLink);
                 setTimeout(() => tg.close(), 500);
             }, 1000);
@@ -1044,7 +1053,7 @@
                                 <button class="buy-button" style="background: #5856d6; margin-bottom: 8px;" onclick="showProductDetail(${product.id})">
                                     🖼️ Карточка товара
                                 </button>
-                                <button class="buy-button" onclick="addToCart(${product.id}, \`${product.name}\`, '${product.price}', ${product.priceNum})">
+                                <button class="buy-button" onclick="addToCartById(${product.id})">
                                     🛒 Добавить в корзину
                                 </button>
                             </div>
