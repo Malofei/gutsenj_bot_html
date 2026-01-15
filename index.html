@@ -880,6 +880,12 @@
                 tg.showAlert('❌ Этот товар уже в корзине!');
                 return;
             }
+
+            if (cart.length >= 5) {
+                tg.showAlert('❌ Максимальное количество товаров в корзине - 5 штук!');
+                return;
+            }
+
             cart.push({ id, name, price, priceNum });
             updateCartBadge();
             tg.showAlert('✅ Товар добавлен в корзину!\n\n' + name + '\n' + price);
@@ -931,7 +937,7 @@
                         <div style="margin: 12px 0; color: var(--tg-theme-hint-color, #999); font-size: 14px;">
                             📸 Всего фотографий: ${product.images.length}
                         </div>
-                        <button class="buy-button" onclick="addToCart(${product.id}, '${product.name}', '${product.price}', ${product.priceNum})">
+                        <button class="buy-button" onclick="addToCart(${product.id}, \`${product.name}\`, '${product.price}', ${product.priceNum})">
                             🛒 Добавить в корзину
                         </button>
                     </div>
@@ -1043,7 +1049,7 @@
                                 <button class="buy-button" style="background: #5856d6; margin-bottom: 8px;" onclick="showProductDetail(${product.id})">
                                     🖼️ Карточка товара
                                 </button>
-                                <button class="buy-button" onclick="addToCart(${product.id}, '${product.name}', '${product.price}', ${product.priceNum})">
+                                <button class="buy-button" onclick="addToCart(${product.id}, \`${product.name}\`, '${product.price}', ${product.priceNum})">
                                     🛒 Добавить в корзину
                                 </button>
                             </div>
