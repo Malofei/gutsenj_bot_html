@@ -717,7 +717,7 @@
                 },
                 {
                     id: 9,
-                    name: "Футболка DmC 1",
+                    name: "Футболка DMC 1",
                     price: "4500 руб",
                     priceNum: 4500,
                     images: [
@@ -825,7 +825,7 @@
                 dmc: [
                     {
                         id: 9,
-                        name: "Футболка DmC 1",
+                        name: "Футболка DMC 1",
                         price: "4500 руб",
                         priceNum: 4500,
                         images: [
@@ -878,11 +878,6 @@
             const existingItem = cart.find(item => item.id === id);
             if (existingItem) {
                 tg.showAlert('❌ Этот товар уже в корзине!');
-                return;
-            }
-
-            if (cart.length >= 5) {
-                tg.showAlert('❌ Максимальное количество товаров в корзине - 5 штук!');
                 return;
             }
 
