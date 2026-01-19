@@ -76,47 +76,20 @@ function renderCart() {
 
     html += `
         <div class="cart-total">💰 Итого: ${total} руб</div>
-        <button class="order-button" id="orderButton">✅ Оформить заказ</button>
+        <button class="order-button" id="orderButton" ontouchstart="placeOrder()" onclick="placeOrder()">✅ Оформить заказ (${cart.length} шт)</button>
         <button class="buy-button" onclick="goBackFromCart()" style="background: var(--tg-theme-secondary-bg-color, #f0f0f0); color: var(--tg-theme-text-color, #000); margin-top: 12px; margin-bottom: 60px;">
             ◀️ Вернуться в магазин
         </button>
     `;
     cartItems.innerHTML = html;
 
-    // Добавляем обработчик события напрямую к кнопке
-    setTimeout(() => {
-        const orderBtn = document.getElementById('orderButton');
-        if (orderBtn) {
-            // Удаляем старые обработчики если есть
-            orderBtn.onclick = null;
-            // Добавляем новый обработчик
-            orderBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                console.log('Клик по кнопке заказа');
-                placeOrder();
-            });
-            console.log('Обработчик добавлен к кнопке заказа');
-        }
-    }, 100);
-
     // Прокручиваем вверх
     window.scrollTo(0, 0);
-
-    // Если товаров много, показываем кнопку через секунду
-    if (cart.length > 5) {
-        setTimeout(() => {
-            const orderBtn = document.getElementById('orderButton');
-            if (orderBtn) {
-                // Плавная прокрутка к кнопке заказа
-                orderBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
-        }, 500);
-    }
 }
 
 async function placeOrder() {
-    console.log('placeOrder вызвана, товаров в корзине:', cart.length);
+    // Показываем что функция вызвана
+    tg.showAlert('🔄 Обработка заказа...');
 
     if (cart.length === 0) {
         tg.showAlert('❌ Корзина пуста!');
@@ -126,46 +99,31 @@ async function placeOrder() {
     try {
         const total = cart.reduce((sum, item) => sum + item.priceNum, 0);
         const itemIds = cart.map(item => item.id).join(',');
-        const itemsList = cart.map(item => `• ${item.name} - ${item.price}`).join('\n');
 
-        console.log('Формирование заказа:', { itemIds, total, count: cart.length });
-
-        // Показываем сообщение пользователю
-        tg.showAlert('📦 Ваш заказ:\n\n' + itemsList + '\n\n💰 Итого: ' + total + ' руб\n\nСейчас откроется чат с ботом для подтверждения заказа.');
-
-        // Формируем код заказа
+        // Проверяем длину данных
         const orderCode = `order_${itemIds}_${total}_${Date.now()}`;
-        console.log('Код заказа:', orderCode);
-        console.log('Длина кода заказа:', orderCode.length);
 
-        // Кодируем в base64
-        let encodedOrder;
-        try {
-            encodedOrder = btoa(orderCode);
-            console.log('Закодированный заказ:', encodedOrder);
-        } catch (e) {
-            console.error('Ошибка при кодировании:', e);
-            tg.showAlert('❌ Ошибка: слишком много товаров для обработки. Пожалуйста, разделите заказ на несколько частей.');
+        if (orderCode.length > 500) {
+            tg.showAlert('❌ Слишком много товаров в одном заказе!\n\nМаксимум можно заказать 5-6 товаров за раз.\n\nПожалуйста, разделите заказ на несколько частей.');
             return;
         }
 
-        setTimeout(() => {
-            const botUsername = 'gutsenj_bot';
-            const deepLink = `https://t.me/${botUsername}?start=${encodedOrder}`;
-            console.log('Deep link:', deepLink);
-            console.log('Длина deep link:', deepLink.length);
+        // Кодируем в base64
+        const encodedOrder = btoa(orderCode);
 
-            try {
-                tg.openTelegramLink(deepLink);
-                setTimeout(() => tg.close(), 500);
-            } catch (e) {
-                console.error('Ошибка при открытии deep link:', e);
-                tg.showAlert('❌ Ошибка при открытии бота. Попробуйте уменьшить количество товаров.');
-            }
-        }, 1000);
+        // Открываем бота
+        const botUsername = 'gutsenj_bot';
+        const deepLink = `https://t.me/${botUsername}?start=${encodedOrder}`;
+
+        tg.openTelegramLink(deepLink);
+
+        // Закрываем приложение через полсекунды
+        setTimeout(() => {
+            tg.close();
+        }, 500);
+
     } catch (error) {
-        console.error('Ошибка в placeOrder:', error);
-        tg.showAlert('❌ Произошла ошибка: ' + error.message);
+        tg.showAlert('❌ Ошибка при оформлении заказа!\n\n' + error.message + '\n\nПопробуйте уменьшить количество товаров.');
     }
 }
 
