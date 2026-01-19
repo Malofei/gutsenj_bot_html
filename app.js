@@ -88,9 +88,6 @@ function renderCart() {
 }
 
 async function placeOrder() {
-    // Показываем что функция вызвана
-    tg.showAlert('🔄 Обработка заказа...');
-
     if (cart.length === 0) {
         tg.showAlert('❌ Корзина пуста!');
         return;
@@ -99,31 +96,29 @@ async function placeOrder() {
     try {
         const total = cart.reduce((sum, item) => sum + item.priceNum, 0);
         const itemIds = cart.map(item => item.id).join(',');
+        const itemsList = cart.map(item => `• ${item.name} - ${item.price}`).join('\n');
 
-        // Проверяем длину данных
+        // Показываем информацию о заказе
+        tg.showAlert('📦 Ваш заказ:\n\n' + itemsList + '\n\n💰 Итого: ' + total + ' руб\n\nСейчас откроется чат с ботом для подтверждения заказа.');
+
+        // Формируем код заказа
         const orderCode = `order_${itemIds}_${total}_${Date.now()}`;
-
-        if (orderCode.length > 500) {
-            tg.showAlert('❌ Слишком много товаров в одном заказе!\n\nМаксимум можно заказать 5-6 товаров за раз.\n\nПожалуйста, разделите заказ на несколько частей.');
-            return;
-        }
-
-        // Кодируем в base64
         const encodedOrder = btoa(orderCode);
 
         // Открываем бота
-        const botUsername = 'gutsenj_bot';
-        const deepLink = `https://t.me/${botUsername}?start=${encodedOrder}`;
-
-        tg.openTelegramLink(deepLink);
-
-        // Закрываем приложение через полсекунды
         setTimeout(() => {
-            tg.close();
-        }, 500);
+            const botUsername = 'gutsenj_bot';
+            const deepLink = `https://t.me/${botUsername}?start=${encodedOrder}`;
+            tg.openTelegramLink(deepLink);
+
+            // Закрываем приложение
+            setTimeout(() => {
+                tg.close();
+            }, 500);
+        }, 1000);
 
     } catch (error) {
-        tg.showAlert('❌ Ошибка при оформлении заказа!\n\n' + error.message + '\n\nПопробуйте уменьшить количество товаров.');
+        tg.showAlert('❌ Произошла ошибка при оформлении заказа. Попробуйте еще раз.');
     }
 }
 
