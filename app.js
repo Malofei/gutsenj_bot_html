@@ -43,7 +43,7 @@ function showCart() {
     document.getElementById('productsView').classList.remove('active');
     document.getElementById('productDetailView').classList.remove('active');
     document.getElementById('cartView').classList.add('active');
-    document.getElementById('backButton').classList.remove('active'); // Убираем кнопку "Назад"
+    document.getElementById('backButton').classList.remove('active'); // Убираем фиксированную кнопку
     currentView = 'cart';
     renderCart();
 }
@@ -85,15 +85,6 @@ function renderCart() {
 
     // Прокручиваем вверх, чтобы пользователь видел все товары
     window.scrollTo(0, 0);
-}🗑️ Удалить</button>
-        </div>
-    `).join('');
-
-    html += `
-        <div class="cart-total">💰 Итого: ${total} руб</div>
-        <button class="order-button" onclick="placeOrder()">✅ Оформить заказ</button>
-    `;
-    cartItems.innerHTML = html;
 }
 
 async function placeOrder() {
