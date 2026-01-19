@@ -96,26 +96,10 @@ async function placeOrder() {
     try {
         const total = cart.reduce((sum, item) => sum + item.priceNum, 0);
         const itemIds = cart.map(item => item.id).join(',');
-        const itemsList = cart.map(item => `• ${item.name} - ${item.price}`).join('\n');
 
-        // Показываем информацию о заказе
-        tg.showAlert('📦 Ваш заказ:\n\n' + itemsList + '\n\n💰 Итого: ' + total + ' руб\n\nСейчас откроется чат с ботом для подтверждения заказа.');
-
-        // Формируем код заказа
-        const orderCode = `order_${itemIds}_${total}_${Date.now()}`;
-        const encodedOrder = btoa(orderCode);
-
-        // Открываем бота
-        setTimeout(() => {
-            const botUsername = 'gutsenj_bot';
-            const deepLink = `https://t.me/${botUsername}?start=${encodedOrder}`;
-            tg.openTelegramLink(deepLink);
-
-            // Закрываем приложение
-            setTimeout(() => {
-                tg.close();
-            }, 500);
-        }, 1000);
+        // Отправляем данные напрямую через Telegram Web App API
+        const orderData = `ORDER_${itemIds}_${total}`;
+        tg.sendData(orderData);
 
     } catch (error) {
         tg.showAlert('❌ Произошла ошибка при оформлении заказа. Попробуйте еще раз.');
