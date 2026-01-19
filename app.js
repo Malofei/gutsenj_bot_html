@@ -76,7 +76,7 @@ function renderCart() {
 
     html += `
         <div class="cart-total">💰 Итого: ${total} руб</div>
-        <button class="order-button" id="orderButton" ontouchstart="placeOrder()" onclick="placeOrder()">✅ Оформить заказ (${cart.length} шт)</button>
+        <button class="order-button" type="button" ontouchstart="placeOrder()" onmousedown="placeOrder()">✅ Оформить заказ (${cart.length} шт)</button>
         <button class="buy-button" onclick="goBackFromCart()" style="background: var(--tg-theme-secondary-bg-color, #f0f0f0); color: var(--tg-theme-text-color, #000); margin-top: 12px; margin-bottom: 60px;">
             ◀️ Вернуться в магазин
         </button>
@@ -87,7 +87,7 @@ function renderCart() {
     window.scrollTo(0, 0);
 }
 
-async function placeOrder() {
+function placeOrder() {
     if (cart.length === 0) {
         tg.showAlert('❌ Корзина пуста!');
         return;
@@ -111,11 +111,25 @@ async function placeOrder() {
             return;
         }
 
-        tg.openTelegramLink(deepLink);
-        tg.close();
+        // Открываем ссылку
+        if (tg.openTelegramLink) {
+            tg.openTelegramLink(deepLink);
+        } else if (tg.openLink) {
+            tg.openLink(deepLink);
+        } else {
+            // Fallback для десктопа
+            window.open(deepLink, '_blank');
+        }
+
+        // Закрываем приложение
+        setTimeout(() => {
+            if (tg.close) {
+                tg.close();
+            }
+        }, 300);
 
     } catch (error) {
-        tg.showAlert('❌ Ошибка оформления заказа. Попробуйте уменьшить количество товаров.');
+        tg.showAlert('❌ Ошибка оформления заказа: ' + error.message);
     }
 }
 
