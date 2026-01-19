@@ -76,18 +76,46 @@ function renderCart() {
 
     html += `
         <div class="cart-total">💰 Итого: ${total} руб</div>
-        <button class="order-button" type="button" ontouchstart="placeOrder()" onmousedown="placeOrder()">✅ Оформить заказ (${cart.length} шт)</button>
+        <button
+            class="order-button"
+            id="orderBtn"
+            type="button"
+            style="pointer-events: auto; cursor: pointer;"
+        >✅ Оформить заказ (${cart.length} шт)</button>
         <button class="buy-button" onclick="goBackFromCart()" style="background: var(--tg-theme-secondary-bg-color, #f0f0f0); color: var(--tg-theme-text-color, #000); margin-top: 12px; margin-bottom: 60px;">
             ◀️ Вернуться в магазин
         </button>
     `;
     cartItems.innerHTML = html;
 
+    // Добавляем обработчик напрямую через JavaScript
+    setTimeout(() => {
+        const btn = document.getElementById('orderBtn');
+        if (btn) {
+            btn.onclick = function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                placeOrder();
+            };
+            btn.ontouchstart = function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                placeOrder();
+            };
+            console.log('Обработчики добавлены к кнопке');
+        } else {
+            console.error('Кнопка не найдена!');
+        }
+    }, 100);
+
     // Прокручиваем вверх
     window.scrollTo(0, 0);
 }
 
 function placeOrder() {
+    // Сразу показываем что функция вызвана
+    alert('Функция placeOrder вызвана');
+
     if (cart.length === 0) {
         tg.showAlert('❌ Корзина пуста!');
         return;
@@ -96,11 +124,15 @@ function placeOrder() {
     const total = cart.reduce((sum, item) => sum + item.priceNum, 0);
     const itemIds = cart.map(item => item.id).join(',');
 
+    alert('Товаров: ' + cart.length + ', ID: ' + itemIds);
+
     // Формируем код заказа (без timestamp чтобы короче)
     const orderCode = `order_${itemIds}_${total}`;
 
     try {
         const encodedOrder = btoa(orderCode);
+
+        alert('Заказ закодирован: ' + encodedOrder.substring(0, 30) + '...');
 
         // Проверяем длину deep link
         const botUsername = 'gutsenj_bot';
@@ -111,15 +143,21 @@ function placeOrder() {
             return;
         }
 
+        alert('Deep link создан, длина: ' + deepLink.length);
+
         // Открываем ссылку
         if (tg.openTelegramLink) {
+            alert('Используем tg.openTelegramLink');
             tg.openTelegramLink(deepLink);
         } else if (tg.openLink) {
+            alert('Используем tg.openLink');
             tg.openLink(deepLink);
         } else {
-            // Fallback для десктопа
+            alert('Используем window.open');
             window.open(deepLink, '_blank');
         }
+
+        alert('Ссылка открыта, закрываем приложение');
 
         // Закрываем приложение
         setTimeout(() => {
@@ -129,6 +167,7 @@ function placeOrder() {
         }, 300);
 
     } catch (error) {
+        alert('ОШИБКА: ' + error.message);
         tg.showAlert('❌ Ошибка оформления заказа: ' + error.message);
     }
 }
