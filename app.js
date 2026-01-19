@@ -93,16 +93,29 @@ async function placeOrder() {
         return;
     }
 
-    try {
-        const total = cart.reduce((sum, item) => sum + item.priceNum, 0);
-        const itemIds = cart.map(item => item.id).join(',');
+    const total = cart.reduce((sum, item) => sum + item.priceNum, 0);
+    const itemIds = cart.map(item => item.id).join(',');
 
-        // Отправляем данные напрямую через Telegram Web App API
-        const orderData = `ORDER_${itemIds}_${total}`;
-        tg.sendData(orderData);
+    // Формируем код заказа (без timestamp чтобы короче)
+    const orderCode = `order_${itemIds}_${total}`;
+
+    try {
+        const encodedOrder = btoa(orderCode);
+
+        // Проверяем длину deep link
+        const botUsername = 'gutsenj_bot';
+        const deepLink = `https://t.me/${botUsername}?start=${encodedOrder}`;
+
+        if (deepLink.length > 2000) {
+            tg.showAlert('❌ Слишком много товаров!\n\nМаксимум 8-10 товаров за раз.\nОформите заказ в несколько этапов.');
+            return;
+        }
+
+        tg.openTelegramLink(deepLink);
+        tg.close();
 
     } catch (error) {
-        tg.showAlert('❌ Произошла ошибка при оформлении заказа. Попробуйте еще раз.');
+        tg.showAlert('❌ Ошибка оформления заказа. Попробуйте уменьшить количество товаров.');
     }
 }
 
