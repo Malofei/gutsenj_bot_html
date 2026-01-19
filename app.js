@@ -43,7 +43,7 @@ function showCart() {
     document.getElementById('productsView').classList.remove('active');
     document.getElementById('productDetailView').classList.remove('active');
     document.getElementById('cartView').classList.add('active');
-    document.getElementById('backButton').classList.add('active');
+    document.getElementById('backButton').classList.remove('active'); // Убираем кнопку "Назад"
     currentView = 'cart';
     renderCart();
 }
@@ -51,7 +51,15 @@ function showCart() {
 function renderCart() {
     const cartItems = document.getElementById('cartItems');
     if (cart.length === 0) {
-        cartItems.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🛒</div><p>Корзина пуста</p></div>';
+        cartItems.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-state-icon">🛒</div>
+                <p>Корзина пуста</p>
+            </div>
+            <button class="buy-button" onclick="goBackFromCart()" style="margin-top: 20px;">
+                ◀️ Вернуться в магазин
+            </button>
+        `;
         return;
     }
 
@@ -63,6 +71,21 @@ function renderCart() {
                 <div class="cart-item-price">${item.price}</div>
             </div>
             <button class="cart-item-remove" onclick="removeFromCart(${item.id})">🗑️ Удалить</button>
+        </div>
+    `).join('');
+
+    html += `
+        <div class="cart-total">💰 Итого: ${total} руб</div>
+        <button class="order-button" onclick="placeOrder()">✅ Оформить заказ</button>
+        <button class="buy-button" onclick="goBackFromCart()" style="background: var(--tg-theme-secondary-bg-color, #f0f0f0); color: var(--tg-theme-text-color, #000); margin-top: 12px;">
+            ◀️ Вернуться в магазин
+        </button>
+    `;
+    cartItems.innerHTML = html;
+
+    // Прокручиваем вверх, чтобы пользователь видел все товары
+    window.scrollTo(0, 0);
+}🗑️ Удалить</button>
         </div>
     `).join('');
 
@@ -130,6 +153,15 @@ function goBack() {
         document.getElementById('backButton').classList.remove('active');
         currentView = 'main';
     }
+    window.scrollTo(0, 0);
+}
+
+function goBackFromCart() {
+    document.getElementById('mainView').style.display = 'block';
+    document.getElementById('productsView').classList.remove('active');
+    document.getElementById('productDetailView').classList.remove('active');
+    document.getElementById('cartView').classList.remove('active');
+    currentView = 'main';
     window.scrollTo(0, 0);
 }
 
