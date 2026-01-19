@@ -75,7 +75,7 @@ body {
 
 .cart-view {
     display: none;
-    padding-bottom: 40px;
+    padding-bottom: 60px;
 }
 
 .cart-view.active {

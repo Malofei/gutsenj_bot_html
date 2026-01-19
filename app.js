@@ -43,7 +43,7 @@ function showCart() {
     document.getElementById('productsView').classList.remove('active');
     document.getElementById('productDetailView').classList.remove('active');
     document.getElementById('cartView').classList.add('active');
-    document.getElementById('backButton').classList.remove('active'); // Убираем фиксированную кнопку
+    document.getElementById('backButton').classList.remove('active');
     currentView = 'cart';
     renderCart();
 }
@@ -77,7 +77,7 @@ function renderCart() {
     html += `
         <div class="cart-total">💰 Итого: ${total} руб</div>
         <button class="order-button" onclick="placeOrder()">✅ Оформить заказ</button>
-        <button class="buy-button" onclick="goBackFromCart()" style="background: var(--tg-theme-secondary-bg-color, #f0f0f0); color: var(--tg-theme-text-color, #000); margin-top: 12px;">
+        <button class="buy-button" onclick="goBackFromCart()" style="background: var(--tg-theme-secondary-bg-color, #f0f0f0); color: var(--tg-theme-text-color, #000); margin-top: 12px; margin-bottom: 40px;">
             ◀️ Вернуться в магазин
         </button>
     `;
