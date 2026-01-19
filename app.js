@@ -76,15 +76,26 @@ function renderCart() {
 
     html += `
         <div class="cart-total">💰 Итого: ${total} руб</div>
-        <button class="order-button" onclick="placeOrder()">✅ Оформить заказ</button>
-        <button class="buy-button" onclick="goBackFromCart()" style="background: var(--tg-theme-secondary-bg-color, #f0f0f0); color: var(--tg-theme-text-color, #000); margin-top: 12px; margin-bottom: 40px;">
+        <button class="order-button" id="orderButton" onclick="placeOrder()">✅ Оформить заказ</button>
+        <button class="buy-button" onclick="goBackFromCart()" style="background: var(--tg-theme-secondary-bg-color, #f0f0f0); color: var(--tg-theme-text-color, #000); margin-top: 12px; margin-bottom: 60px;">
             ◀️ Вернуться в магазин
         </button>
     `;
     cartItems.innerHTML = html;
 
-    // Прокручиваем вверх, чтобы пользователь видел все товары
+    // Прокручиваем вверх
     window.scrollTo(0, 0);
+
+    // Если товаров много, показываем подсказку через секунду
+    if (cart.length > 5) {
+        setTimeout(() => {
+            const orderBtn = document.getElementById('orderButton');
+            if (orderBtn) {
+                // Плавная прокрутка к кнопке заказа
+                orderBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }, 500);
+    }
 }
 
 async function placeOrder() {
