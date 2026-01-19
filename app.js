@@ -88,7 +88,6 @@ function renderCart() {
     `;
     cartItems.innerHTML = html;
 
-    // Добавляем обработчик напрямую через JavaScript
     setTimeout(() => {
         const btn = document.getElementById('orderBtn');
         if (btn) {
@@ -102,20 +101,13 @@ function renderCart() {
                 e.stopPropagation();
                 placeOrder();
             };
-            console.log('Обработчики добавлены к кнопке');
-        } else {
-            console.error('Кнопка не найдена!');
         }
     }, 100);
 
-    // Прокручиваем вверх
     window.scrollTo(0, 0);
 }
 
 function placeOrder() {
-    // Сразу показываем что функция вызвана
-    alert('Функция placeOrder вызвана');
-
     if (cart.length === 0) {
         tg.showAlert('❌ Корзина пуста!');
         return;
@@ -123,43 +115,21 @@ function placeOrder() {
 
     const total = cart.reduce((sum, item) => sum + item.priceNum, 0);
     const itemIds = cart.map(item => item.id).join(',');
-
-    alert('Товаров: ' + cart.length + ', ID: ' + itemIds);
-
-    // Формируем код заказа (без timestamp чтобы короче)
     const orderCode = `order_${itemIds}_${total}`;
 
     try {
         const encodedOrder = btoa(orderCode);
-
-        alert('Заказ закодирован: ' + encodedOrder.substring(0, 30) + '...');
-
-        // Проверяем длину deep link
         const botUsername = 'gutsenj_bot';
         const deepLink = `https://t.me/${botUsername}?start=${encodedOrder}`;
 
-        if (deepLink.length > 2000) {
-            tg.showAlert('❌ Слишком много товаров!\n\nМаксимум 8-10 товаров за раз.\nОформите заказ в несколько этапов.');
-            return;
-        }
-
-        alert('Deep link создан, длина: ' + deepLink.length);
-
-        // Открываем ссылку
         if (tg.openTelegramLink) {
-            alert('Используем tg.openTelegramLink');
             tg.openTelegramLink(deepLink);
         } else if (tg.openLink) {
-            alert('Используем tg.openLink');
             tg.openLink(deepLink);
         } else {
-            alert('Используем window.open');
             window.open(deepLink, '_blank');
         }
 
-        alert('Ссылка открыта, закрываем приложение');
-
-        // Закрываем приложение
         setTimeout(() => {
             if (tg.close) {
                 tg.close();
@@ -167,8 +137,7 @@ function placeOrder() {
         }, 300);
 
     } catch (error) {
-        alert('ОШИБКА: ' + error.message);
-        tg.showAlert('❌ Ошибка оформления заказа: ' + error.message);
+        tg.showAlert('❌ Ошибка оформления заказа. Попробуйте еще раз.');
     }
 }
 
