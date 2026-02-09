@@ -122,10 +122,10 @@ const PRODUCTS = {
             price: "4500 руб",
             priceNum: 4500,
             images: [
-                "https://malofei.github.io/gutsenj_bot_html/images/tshka_higuruma_1.png",
-                "https://malofei.github.io/gutsenj_bot_html/images/tshka_higuruma_2.png",
-                "https://malofei.github.io/gutsenj_bot_html/images/tshka_higuruma_3.png",
-                "https://malofei.github.io/gutsenj_bot_html/images/tshka_higuruma_4.png"
+                "https://malofei.github.io/gutsenj_bot_html/images/tshka_higuruma.png",
+                "https://malofei.github.io/gutsenj_bot_html/images/tshka_higuruma2.png",
+                "https://malofei.github.io/gutsenj_bot_html/images/tshka_higuruma3.png",
+                "https://malofei.github.io/gutsenj_bot_html/images/tshka_higuruma4.png"
             ]
         }
     ],
