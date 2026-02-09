@@ -10,9 +10,9 @@ const PRODUCTS = {
             priceNum: 7000,
             images: [
                 "https://malofei.github.io/gutsenj_bot_html/images/hoodie1.jpg",
-                "https://malofei.github.io/gutsenj_bot_html/images/hoodie2.jpg",
-                "https://malofei.github.io/gutsenj_bot_html/images/hoodie3.jpg",
-                "https://malofei.github.io/gutsenj_bot_html/images/hoodie4.jpg",
+                "https://malofei.github.io/gutsenj_bot_html/images/hoddie2.jpg",
+                "https://malofei.github.io/gutsenj_bot_html/images/hoddie3.jpg",
+                "https://malofei.github.io/gutsenj_bot_html/images/hoddie4.jpg",
                 "https://malofei.github.io/gutsenj_bot_html/images/hoodie5.jpg",
                 "https://malofei.github.io/gutsenj_bot_html/images/hoodie6.jpg",
                 "https://malofei.github.io/gutsenj_bot_html/images/hoodie7.jpg"
