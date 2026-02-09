@@ -115,12 +115,24 @@ const PRODUCTS = {
                 "https://malofei.github.io/gutsenj_bot_html/images/tshka_dmc_3.jpg",
                 "https://malofei.github.io/gutsenj_bot_html/images/tshka_dmc_4.jpg"
             ]
+        },
+        {
+            id: 10,
+            name: "Футболка Hiromi Higuruma",
+            price: "4500 руб",
+            priceNum: 4500,
+            images: [
+                "https://malofei.github.io/gutsenj_bot_html/images/tshka_higuruma_1.png",
+                "https://malofei.github.io/gutsenj_bot_html/images/tshka_higuruma_2.png",
+                "https://malofei.github.io/gutsenj_bot_html/images/tshka_higuruma_3.png",
+                "https://malofei.github.io/gutsenj_bot_html/images/tshka_higuruma_4.png"
+            ]
         }
     ],
     themes: {
         berserk: [1, 2, 3, 4, 5], // ID товаров
         bleach: [7, 8],
-        jujutsu: [],
+        jujutsu: [10],
         hollow: [],
         dmc: [9],
         witcher: [6]
